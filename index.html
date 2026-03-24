@@ -400,6 +400,89 @@
       50% { transform: scale(1.15); color: #a8f0e6; }
       100% { transform: scale(1); }
     }
+
+    /* Popup message after confetti */
+    .popup-message {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0);
+      z-index: 200;
+      background: linear-gradient(135deg, rgba(20, 10, 50, 0.95) 0%, rgba(60, 30, 90, 0.95) 100%);
+      backdrop-filter: blur(20px);
+      border: 2px solid rgba(168, 240, 230, 0.4);
+      border-radius: 24px;
+      padding: 40px 48px;
+      text-align: center;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5), 0 0 40px rgba(168, 240, 230, 0.15);
+      animation: popupAppear 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+      max-width: 420px;
+      width: 90%;
+    }
+
+    .popup-message .popup-emoji {
+      font-size: 48px;
+      margin-bottom: 16px;
+      display: block;
+      animation: popupBounce 1s ease-in-out infinite;
+    }
+
+    .popup-message .popup-text {
+      font-size: 22px;
+      font-weight: 900;
+      color: #ffd93d;
+      line-height: 1.5;
+      text-shadow: 0 2px 10px rgba(255, 217, 61, 0.3);
+    }
+
+    .popup-message .popup-sub {
+      font-size: 14px;
+      color: rgba(255,255,255,0.6);
+      margin-top: 12px;
+    }
+
+    .popup-message .popup-close {
+      margin-top: 20px;
+      padding: 10px 28px;
+      border: none;
+      border-radius: 50px;
+      background: linear-gradient(135deg, #56d4c8, #48c9b0);
+      color: #fff;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+
+    .popup-message .popup-close:hover {
+      transform: scale(1.05);
+    }
+
+    @keyframes popupAppear {
+      0% { transform: translate(-50%, -50%) scale(0); opacity: 0; }
+      100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+    }
+
+    @keyframes popupBounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+    }
+
+    .popup-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.4);
+      z-index: 150;
+      opacity: 0;
+      animation: fadeIn 0.3s ease-out forwards;
+    }
+
+    @keyframes fadeIn {
+      to { opacity: 1; }
+    }
   </style>
 </head>
 <body>
@@ -591,7 +674,30 @@
       btnEl.style.transform = 'scale(1.15)';
       setTimeout(() => { btnEl.style.transform = ''; }, 200);
 
-      // Cleanup
+      // Show popup message after confetti starts
+      setTimeout(() => {
+        const overlay = document.createElement('div');
+        overlay.className = 'popup-overlay';
+
+        const popup = document.createElement('div');
+        popup.className = 'popup-message';
+        popup.innerHTML = `
+          <span class="popup-emoji">🚌💨</span>
+          <div class="popup-text">7시 40분<br>주택전시관에서 출발 예정</div>
+          <div class="popup-sub">늦지 않게 모여주세요!</div>
+          <button class="popup-close" onclick="this.closest('.popup-message').remove(); document.querySelector('.popup-overlay').remove();">확인했어요!</button>
+        `;
+
+        overlay.addEventListener('click', () => {
+          popup.remove();
+          overlay.remove();
+        });
+
+        document.body.appendChild(overlay);
+        document.body.appendChild(popup);
+      }, 600);
+
+      // Cleanup confetti
       setTimeout(() => container.remove(), 4000);
     }
   </script>
