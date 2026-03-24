@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>나는 솔로 시청 파티 초대장</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700;900&display=swap');
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Noto Sans KR', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+      background: linear-gradient(180deg, #4a3a8a 0%, #7b5ea7 30%, #c78db5 60%, #9a7cc5 100%);
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+    }
+
+    /* Floating emoji container */
+    .floating-emojis {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    .emoji {
+      position: absolute;
+      font-size: 28px;
+      animation: floatEmoji 8s ease-in-out infinite;
+      opacity: 0.85;
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+    }
+
+    @keyframes floatEmoji {
+      0%, 100% { transform: translateY(0) rotate(0deg) scale(1); }
+      25% { transform: translateY(-20px) rotate(10deg) scale(1.05); }
+      50% { transform: translateY(-35px) rotate(-5deg) scale(1.1); }
+      75% { transform: translateY(-15px) rotate(8deg) scale(1.02); }
+    }
+
+    /* Badge top-right */
+    .badge {
+      position: absolute;
+      top: 24px;
+      right: 24px;
+      background: rgba(255,255,255,0.15);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.3);
+      border-radius: 8px;
+      padding: 10px 20px;
+      font-size: 14px;
+      font-weight: 700;
+      z-index: 10;
+      animation: fadeSlideIn 1s ease-out 0.3s both;
+    }
+
+    /* Main content */
+    .main-content {
+      position: relative;
+      z-index: 5;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 80px 20px 40px;
+      max-width: 800px;
+      width: 100%;
+    }
+
+    .title {
+      font-size: clamp(64px, 12vw, 120px);
+      font-weight: 900;
+      line-height: 1.1;
+      text-align: center;
+      text-shadow: 0 4px 20px rgba(0,0,0,0.3);
+      animation: titlePop 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+      margin-bottom: 20px;
+    }
+
+    .title span {
+      display: inline-block;
+    }
+
+    @keyframes titlePop {
+      0% { transform: scale(0.5); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    .subtitle {
+      font-size: clamp(16px, 3vw, 22px);
+      font-weight: 400;
+      opacity: 0;
+      animation: fadeSlideIn 0.8s ease-out 0.5s both;
+      margin-bottom: 36px;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    }
+
+    @keyframes fadeSlideIn {
+      0% { transform: translateY(20px); opacity: 0; }
+      100% { transform: translateY(0); opacity: 1; }
+    }
+
+    /* Buttons */
+    .buttons {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 36px;
+      flex-wrap: wrap;
+      justify-content: center;
+      opacity: 0;
+      animation: fadeSlideIn 0.8s ease-out 0.8s both;
+    }
+
+    .btn {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 36px;
+      border-radius: 50px;
+      font-size: 18px;
+      font-weight: 700;
+      text-decoration: none;
+      cursor: pointer;
+      border: none;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .btn:hover {
+      transform: translateY(-3px) scale(1.03);
+      box-shadow: 0 8px 25px rgba(0,0,0,0.25);
+    }
+
+    .btn:active {
+      transform: scale(0.97);
+    }
+
+    .btn-watch {
+      background: linear-gradient(135deg, #56d4c8 0%, #48c9b0 100%);
+      color: #fff;
+      box-shadow: 0 4px 15px rgba(72, 201, 176, 0.4);
+    }
+
+    .btn-chat {
+      background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+      color: #fff;
+      box-shadow: 0 4px 15px rgba(238, 90, 36, 0.4);
+    }
+
+    /* Notification count */
+    .notification-count {
+      font-size: 13px;
+      color: rgba(255,255,255,0.75);
+      margin-bottom: 20px;
+      opacity: 0;
+      animation: fadeSlideIn 0.8s ease-out 1s both;
+    }
+
+    .notification-count span {
+      background: rgba(255,255,255,0.15);
+      padding: 4px 12px;
+      border-radius: 12px;
+    }
+
+    /* Info card */
+    .info-card {
+      background: rgba(255,255,255,0.12);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 16px;
+      padding: 28px 32px;
+      max-width: 500px;
+      width: 100%;
+      margin-bottom: 40px;
+      opacity: 0;
+      animation: fadeSlideIn 0.8s ease-out 1.2s both;
+    }
+
+    .info-card h3 {
+      font-size: 17px;
+      font-weight: 700;
+      margin-bottom: 14px;
+      color: #a8f0e6;
+    }
+
+    .info-card ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    .info-card ul li {
+      font-size: 15px;
+      padding: 4px 0;
+      line-height: 1.6;
+    }
+
+    .info-card ul li::before {
+      content: "•";
+      margin-right: 8px;
+      color: #a8f0e6;
+    }
+
+    .coupang-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.25);
+      border-radius: 8px;
+      padding: 8px 16px;
+      margin-top: 14px;
+      font-size: 14px;
+      color: #fff;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .coupang-btn:hover {
+      background: rgba(255,255,255,0.22);
+    }
+
+    /* Sponsors */
+    .sponsors {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+      gap: 28px;
+      padding: 28px 20px;
+      border-top: 1px solid rgba(255,255,255,0.15);
+      width: 100%;
+      max-width: 900px;
+      opacity: 0;
+      animation: fadeSlideIn 0.8s ease-out 1.5s both;
+    }
+
+    .sponsor {
+      font-size: 14px;
+      font-weight: 700;
+      opacity: 0.7;
+      letter-spacing: 1px;
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .sponsor-icon {
+      font-size: 18px;
+    }
+
+    /* Pulse glow on title */
+    .title {
+      animation: titlePop 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) both,
+                 glowPulse 3s ease-in-out 1.5s infinite;
+    }
+
+    @keyframes glowPulse {
+      0%, 100% { text-shadow: 0 4px 20px rgba(0,0,0,0.3); }
+      50% { text-shadow: 0 4px 40px rgba(168, 240, 230, 0.4), 0 4px 20px rgba(0,0,0,0.3); }
+    }
+
+    /* Responsive */
+    @media (max-width: 600px) {
+      .badge {
+        top: 12px;
+        right: 12px;
+        font-size: 12px;
+        padding: 8px 14px;
+      }
+      .btn {
+        padding: 12px 24px;
+        font-size: 16px;
+      }
+      .info-card {
+        padding: 20px 20px;
+      }
+      .sponsors {
+        gap: 16px;
+      }
+      .sponsor {
+        font-size: 12px;
+      }
+    }
+
+    /* Sparkle animation for background */
+    .sparkle {
+      position: absolute;
+      width: 4px;
+      height: 4px;
+      background: #fff;
+      border-radius: 50%;
+      animation: sparkle 2s ease-in-out infinite;
+      pointer-events: none;
+    }
+
+    @keyframes sparkle {
+      0%, 100% { opacity: 0; transform: scale(0); }
+      50% { opacity: 1; transform: scale(1); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Floating emojis -->
+  <div class="floating-emojis" id="floatingEmojis"></div>
+
+  <!-- Badge -->
+  <div class="badge">솔로 라이프 시청 파티</div>
+
+  <!-- Main content -->
+  <div class="main-content">
+    <h1 class="title">나는<br>솔로</h1>
+    <p class="subtitle">수요일 밤 10시 30분, 본방사수!</p>
+
+    <div class="buttons">
+      <button class="btn btn-watch" onclick="alert('함께보기 링크를 설정해주세요!')">
+        <span>💚</span> 함께보기
+      </button>
+      <button class="btn btn-chat" onclick="alert('실시간 소통 링크를 설정해주세요!')">
+        <span>💬</span> 실시간 소통
+      </button>
+    </div>
+
+    <div class="notification-count">
+      <span>본방 알림 신청 2,728명</span>
+    </div>
+
+    <div class="info-card">
+      <h3>나는솔로 진심인 사람들을 위한 모임</h3>
+      <ul>
+        <li>수요일 밤의 뜨거운 열기를 함께</li>
+        <li>최신 기수 분석 및 토론</li>
+        <li>실시간 코멘트 공유</li>
+        <li>정성스러운 식사 제공</li>
+      </ul>
+      <div class="coupang-btn">
+        <span>▶</span> 쿠팡플레이 실시간 시청
+      </div>
+    </div>
+
+    <div class="sponsors">
+      <div class="sponsor"><span class="sponsor-icon">🌹</span> 솔로 문화 협회</div>
+      <div class="sponsor">MEDIA HUB{}</div>
+      <div class="sponsor"><strong>HUB E</strong></div>
+      <div class="sponsor"><strong>HUB S</strong></div>
+      <div class="sponsor">GOLDEN ROSE</div>
+      <div class="sponsor">K-CONTENT PRODUCTION</div>
+    </div>
+  </div>
+
+  <script>
+    // Emoji configuration
+    const emojiData = [
+      { emoji: '📺', x: 8, y: 8, delay: 0 },
+      { emoji: '💗', x: 12, y: 25, delay: 1.2 },
+      { emoji: '🌹', x: 5, y: 50, delay: 2.5 },
+      { emoji: '🌹', x: 85, y: 15, delay: 0.8 },
+      { emoji: '🌹', x: 15, y: 75, delay: 3.2 },
+      { emoji: '⭐', x: 88, y: 8, delay: 1.5 },
+      { emoji: '⭐', x: 75, y: 25, delay: 3 },
+      { emoji: '💗', x: 92, y: 40, delay: 0.5 },
+      { emoji: '⚡', x: 90, y: 55, delay: 2 },
+      { emoji: '⚡', x: 82, y: 70, delay: 3.5 },
+      { emoji: '🔥', x: 88, y: 50, delay: 1 },
+      { emoji: '💧', x: 78, y: 60, delay: 2.8 },
+      { emoji: '👑', x: 80, y: 30, delay: 1.8 },
+      { emoji: '💜', x: 20, y: 40, delay: 0.3 },
+      { emoji: '✨', x: 92, y: 80, delay: 2.2 },
+      { emoji: '🌹', x: 10, y: 65, delay: 1.6 },
+      { emoji: '💫', x: 50, y: 85, delay: 3.8 },
+      { emoji: '💗', x: 55, y: 90, delay: 0.7 },
+      { emoji: '⭐', x: 40, y: 88, delay: 2.6 },
+    ];
+
+    const container = document.getElementById('floatingEmojis');
+
+    emojiData.forEach((item, i) => {
+      const el = document.createElement('div');
+      el.className = 'emoji';
+      el.textContent = item.emoji;
+      el.style.left = item.x + '%';
+      el.style.top = item.y + '%';
+      el.style.animationDelay = item.delay + 's';
+      el.style.animationDuration = (6 + Math.random() * 4) + 's';
+      container.appendChild(el);
+    });
+
+    // Add sparkles
+    for (let i = 0; i < 20; i++) {
+      const sparkle = document.createElement('div');
+      sparkle.className = 'sparkle';
+      sparkle.style.left = Math.random() * 100 + '%';
+      sparkle.style.top = Math.random() * 100 + '%';
+      sparkle.style.animationDelay = Math.random() * 3 + 's';
+      sparkle.style.animationDuration = (1.5 + Math.random() * 2) + 's';
+      container.appendChild(sparkle);
+    }
+
+    // Increment notification count animation
+    const countEl = document.querySelector('.notification-count span');
+    const targetCount = 2728;
+    let currentCount = 0;
+    const duration = 2000;
+    const startTime = performance.now();
+
+    function animateCount(now) {
+      const elapsed = now - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      currentCount = Math.floor(eased * targetCount);
+      countEl.textContent = `본방 알림 신청 ${currentCount.toLocaleString()}명`;
+      if (progress < 1) requestAnimationFrame(animateCount);
+    }
+
+    // Start count animation after page loads
+    setTimeout(() => requestAnimationFrame(animateCount), 1500);
+  </script>
+</body>
+</html>
