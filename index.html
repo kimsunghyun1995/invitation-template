@@ -153,12 +153,6 @@
       box-shadow: 0 4px 15px rgba(72, 201, 176, 0.4);
     }
 
-    .btn-chat {
-      background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
-      color: #fff;
-      box-shadow: 0 4px 15px rgba(238, 90, 36, 0.4);
-    }
-
     /* Notification count */
     .notification-count {
       font-size: 13px;
@@ -264,34 +258,45 @@
       font-size: 12px;
     }
 
-    /* Sponsors */
-    .sponsors {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      align-items: center;
-      gap: 28px;
-      padding: 28px 20px;
-      border-top: 1px solid rgba(255,255,255,0.15);
+    /* Sponsors marquee */
+    .sponsors-wrapper {
       width: 100%;
-      max-width: 900px;
+      overflow: hidden;
+      border-top: 1px solid rgba(255,255,255,0.15);
+      padding: 20px 0;
       opacity: 0;
       animation: fadeSlideIn 0.8s ease-out 1.5s both;
+      mask-image: linear-gradient(90deg, transparent 0%, #000 10%, #000 90%, transparent 100%);
+      -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 10%, #000 90%, transparent 100%);
+    }
+
+    .sponsors-track {
+      display: flex;
+      align-items: center;
+      gap: 32px;
+      white-space: nowrap;
+      animation: marqueeScroll 12s linear infinite;
+      width: max-content;
     }
 
     .sponsor {
-      font-size: 14px;
+      font-size: 15px;
       font-weight: 700;
-      opacity: 0.7;
+      opacity: 0.85;
       letter-spacing: 1px;
       white-space: nowrap;
-      display: flex;
-      align-items: center;
-      gap: 6px;
+      flex-shrink: 0;
     }
 
-    .sponsor-icon {
-      font-size: 18px;
+    .sponsor-divider {
+      color: rgba(255,255,255,0.3);
+      font-size: 10px;
+      flex-shrink: 0;
+    }
+
+    @keyframes marqueeScroll {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
     }
 
     /* Pulse glow on title */
@@ -502,9 +507,6 @@
       <button class="btn btn-watch" onclick="launchConfetti(this)">
         <span>💚</span> 함께보기
       </button>
-      <button class="btn btn-chat" onclick="alert('실시간 소통 링크를 설정해주세요!')">
-        <span>💬</span> 실시간 소통
-      </button>
     </div>
 
     <div class="notification-count">
@@ -524,15 +526,21 @@
       </div>
     </div>
 
-    <div class="sponsors">
-      <div class="sponsor"><span class="sponsor-icon">🌹</span> 솔로 문화 협회</div>
-      <div class="sponsor">MEDIA HUB{}</div>
-      <div class="sponsor"><strong>HUB E</strong></div>
-      <div class="sponsor"><strong>HUB S</strong></div>
-      <div class="sponsor">GOLDEN ROSE</div>
-      <div class="sponsor">K-CONTENT PRODUCTION</div>
-      <div class="sponsor">🏢 동천 유타워</div>
-      <div class="sponsor">📶 곽두팔 와이파이</div>
+    <div class="sponsors-wrapper">
+      <div class="sponsors-track">
+        <div class="sponsor">🌹 솔로 문화 협회</div>
+        <div class="sponsor-divider">✦</div>
+        <div class="sponsor">📶 곽두팔 와이파이</div>
+        <div class="sponsor-divider">✦</div>
+        <div class="sponsor">🏢 동천역 유타워</div>
+        <div class="sponsor-divider">✦</div>
+        <div class="sponsor">🌹 솔로 문화 협회</div>
+        <div class="sponsor-divider">✦</div>
+        <div class="sponsor">📶 곽두팔 와이파이</div>
+        <div class="sponsor-divider">✦</div>
+        <div class="sponsor">🏢 동천역 유타워</div>
+        <div class="sponsor-divider">✦</div>
+      </div>
     </div>
   </div>
 
