@@ -310,6 +310,63 @@
       0%, 100% { opacity: 0; transform: scale(0); }
       50% { opacity: 1; transform: scale(1); }
     }
+
+    /* Confetti explosion */
+    .confetti-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 100;
+      overflow: hidden;
+    }
+
+    .confetti {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      opacity: 1;
+    }
+
+    .confetti.square { border-radius: 2px; }
+    .confetti.circle { border-radius: 50%; }
+    .confetti.strip { width: 6px; height: 16px; border-radius: 2px; }
+    .confetti.heart::before {
+      content: '';
+      display: block;
+      width: 100%;
+      height: 100%;
+      background: inherit;
+      border-radius: 50% 50% 0 0;
+      transform: rotate(-45deg);
+    }
+
+    @keyframes confettiFall {
+      0% {
+        transform: translateY(0) rotate(0deg) scale(1);
+        opacity: 1;
+      }
+      80% {
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(100vh) rotate(720deg) scale(0.3);
+        opacity: 0;
+      }
+    }
+
+    /* Count pulse */
+    .count-bump {
+      animation: countBump 0.3s ease-out;
+    }
+
+    @keyframes countBump {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.15); color: #a8f0e6; }
+      100% { transform: scale(1); }
+    }
   </style>
 </head>
 <body>
@@ -326,7 +383,7 @@
     <p class="subtitle">수요일 밤 10시 30분, 본방사수!</p>
 
     <div class="buttons">
-      <button class="btn btn-watch" onclick="alert('함께보기 링크를 설정해주세요!')">
+      <button class="btn btn-watch" onclick="launchConfetti(this)">
         <span>💚</span> 함께보기
       </button>
       <button class="btn btn-chat" onclick="alert('실시간 소통 링크를 설정해주세요!')">
@@ -358,6 +415,8 @@
       <div class="sponsor"><strong>HUB S</strong></div>
       <div class="sponsor">GOLDEN ROSE</div>
       <div class="sponsor">K-CONTENT PRODUCTION</div>
+      <div class="sponsor">🏢 동천 유타워</div>
+      <div class="sponsor">📶 곽두팔 와이파이</div>
     </div>
   </div>
 
@@ -409,24 +468,99 @@
       container.appendChild(sparkle);
     }
 
-    // Increment notification count animation
+    // Continuously increasing notification count
     const countEl = document.querySelector('.notification-count span');
-    const targetCount = 2728;
-    let currentCount = 0;
-    const duration = 2000;
-    const startTime = performance.now();
+    let currentCount = 2728;
 
-    function animateCount(now) {
-      const elapsed = now - startTime;
-      const progress = Math.min(elapsed / duration, 1);
+    // Initial count-up animation from 0 to 2728
+    const initialDuration = 2000;
+    const initialStart = performance.now();
+
+    function animateInitialCount(now) {
+      const elapsed = now - initialStart;
+      const progress = Math.min(elapsed / initialDuration, 1);
       const eased = 1 - Math.pow(1 - progress, 3);
-      currentCount = Math.floor(eased * targetCount);
-      countEl.textContent = `본방 알림 신청 ${currentCount.toLocaleString()}명`;
-      if (progress < 1) requestAnimationFrame(animateCount);
+      const displayCount = Math.floor(eased * currentCount);
+      countEl.textContent = `본방 알림 신청 ${displayCount.toLocaleString()}명`;
+      if (progress < 1) {
+        requestAnimationFrame(animateInitialCount);
+      } else {
+        // After initial animation, start continuous increment
+        startContinuousCount();
+      }
     }
 
-    // Start count animation after page loads
-    setTimeout(() => requestAnimationFrame(animateCount), 1500);
+    function startContinuousCount() {
+      setInterval(() => {
+        const increment = Math.floor(Math.random() * 5) + 1;
+        currentCount += increment;
+        countEl.textContent = `본방 알림 신청 ${currentCount.toLocaleString()}명`;
+        countEl.classList.remove('count-bump');
+        void countEl.offsetWidth; // force reflow
+        countEl.classList.add('count-bump');
+      }, 1500 + Math.random() * 2000);
+    }
+
+    setTimeout(() => requestAnimationFrame(animateInitialCount), 1500);
+
+    // Confetti explosion
+    function launchConfetti(btnEl) {
+      const rect = btnEl.getBoundingClientRect();
+      const originX = rect.left + rect.width / 2;
+      const originY = rect.top + rect.height / 2;
+
+      const container = document.createElement('div');
+      container.className = 'confetti-container';
+      document.body.appendChild(container);
+
+      const colors = ['#ff6b6b', '#ffd93d', '#6bcb77', '#4d96ff', '#ff6bb5', '#a855f7', '#56d4c8', '#ff9f43'];
+      const shapes = ['square', 'circle', 'strip'];
+      const total = 80;
+
+      for (let i = 0; i < total; i++) {
+        const confetti = document.createElement('div');
+        const shape = shapes[Math.floor(Math.random() * shapes.length)];
+        confetti.className = `confetti ${shape}`;
+        confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+        confetti.style.left = originX + 'px';
+        confetti.style.top = originY + 'px';
+
+        const angle = (Math.random() * 360) * (Math.PI / 180);
+        const velocity = 200 + Math.random() * 400;
+        const dx = Math.cos(angle) * velocity;
+        const dy = Math.sin(angle) * velocity - 200;
+        const rotation = Math.random() * 1080 - 540;
+        const duration = 1.2 + Math.random() * 1.5;
+        const size = 6 + Math.random() * 10;
+
+        confetti.style.width = size + 'px';
+        confetti.style.height = (shape === 'strip' ? size * 2.5 : size) + 'px';
+
+        confetti.animate([
+          {
+            transform: 'translate(0, 0) rotate(0deg) scale(1)',
+            opacity: 1
+          },
+          {
+            transform: `translate(${dx}px, ${dy + 600}px) rotate(${rotation}deg) scale(0.2)`,
+            opacity: 0
+          }
+        ], {
+          duration: duration * 1000,
+          easing: 'cubic-bezier(0.25, 0.46, 0.45, 0.94)',
+          fill: 'forwards'
+        });
+
+        container.appendChild(confetti);
+      }
+
+      // Button pulse effect
+      btnEl.style.transform = 'scale(1.15)';
+      setTimeout(() => { btnEl.style.transform = ''; }, 200);
+
+      // Cleanup
+      setTimeout(() => container.remove(), 4000);
+    }
   </script>
 </body>
 </html>
