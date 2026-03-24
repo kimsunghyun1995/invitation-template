@@ -176,59 +176,92 @@
 
     /* Info card */
     .info-card {
-      background: rgba(255,255,255,0.12);
-      backdrop-filter: blur(16px);
-      border: 1px solid rgba(255,255,255,0.2);
-      border-radius: 16px;
-      padding: 28px 32px;
+      background: linear-gradient(135deg, rgba(30, 20, 60, 0.85) 0%, rgba(50, 30, 80, 0.8) 100%);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(168, 240, 230, 0.25);
+      border-radius: 20px;
+      padding: 30px 34px;
       max-width: 500px;
       width: 100%;
       margin-bottom: 40px;
       opacity: 0;
       animation: fadeSlideIn 0.8s ease-out 1.2s both;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255,255,255,0.1);
     }
 
     .info-card h3 {
-      font-size: 17px;
-      font-weight: 700;
-      margin-bottom: 14px;
-      color: #a8f0e6;
+      font-size: 18px;
+      font-weight: 900;
+      margin-bottom: 18px;
+      background: linear-gradient(90deg, #ffd93d, #ff6bb5, #a8f0e6);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-align: center;
+      letter-spacing: 0.5px;
     }
 
     .info-card ul {
       list-style: none;
       padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
     }
 
     .info-card ul li {
       font-size: 15px;
-      padding: 4px 0;
+      padding: 8px 14px;
       line-height: 1.6;
+      color: #e8e0f0;
+      background: rgba(255,255,255,0.06);
+      border-radius: 10px;
+      transition: background 0.2s, transform 0.2s;
     }
 
-    .info-card ul li::before {
-      content: "•";
+    .info-card ul li:hover {
+      background: rgba(255,255,255,0.12);
+      transform: translateX(4px);
+    }
+
+    .info-card ul li .li-emoji {
       margin-right: 8px;
-      color: #a8f0e6;
+      font-size: 17px;
     }
 
     .coupang-btn {
-      display: inline-flex;
+      display: flex;
       align-items: center;
-      gap: 6px;
-      background: rgba(255,255,255,0.12);
-      border: 1px solid rgba(255,255,255,0.25);
-      border-radius: 8px;
-      padding: 8px 16px;
-      margin-top: 14px;
-      font-size: 14px;
+      justify-content: center;
+      gap: 8px;
+      background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+      border: none;
+      border-radius: 12px;
+      padding: 12px 20px;
+      margin-top: 18px;
+      font-size: 15px;
+      font-weight: 700;
       color: #fff;
       cursor: pointer;
-      transition: background 0.2s;
+      transition: transform 0.2s, box-shadow 0.2s;
+      box-shadow: 0 4px 15px rgba(231, 76, 60, 0.4);
+      text-decoration: none;
     }
 
     .coupang-btn:hover {
-      background: rgba(255,255,255,0.22);
+      transform: translateY(-2px) scale(1.02);
+      box-shadow: 0 6px 20px rgba(231, 76, 60, 0.5);
+    }
+
+    .coupang-btn .play-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 24px;
+      height: 24px;
+      background: rgba(255,255,255,0.2);
+      border-radius: 50%;
+      font-size: 12px;
     }
 
     /* Sponsors */
@@ -396,15 +429,15 @@
     </div>
 
     <div class="info-card">
-      <h3>나는솔로 진심인 사람들을 위한 모임</h3>
+      <h3>💘 나는솔로 진심인 사람들을 위한 모임 💘</h3>
       <ul>
-        <li>수요일 밤의 뜨거운 열기를 함께</li>
-        <li>최신 기수 분석 및 토론</li>
-        <li>실시간 코멘트 공유</li>
-        <li>정성스러운 식사 제공</li>
+        <li><span class="li-emoji">🔥</span>수요일 밤의 뜨거운 열기를 함께</li>
+        <li><span class="li-emoji">🔍</span>최신 기수 분석 및 토론</li>
+        <li><span class="li-emoji">💬</span>실시간 코멘트 공유</li>
+        <li><span class="li-emoji">🍽️</span>정성스러운 식사 제공</li>
       </ul>
       <div class="coupang-btn">
-        <span>▶</span> 쿠팡플레이 실시간 시청
+        <span class="play-icon">▶</span> 쿠팡플레이 실시간 시청
       </div>
     </div>
 
