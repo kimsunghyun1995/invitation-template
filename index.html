@@ -210,7 +210,7 @@
     .cinematic-opening[data-scene="walk"] .cinematic-leg { animation: cinematic-step .48s ease-in-out infinite alternate; }
     .cinematic-opening[data-scene="walk"] .cinematic-arm.alt,
     .cinematic-opening[data-scene="walk"] .cinematic-leg.alt { animation-direction: alternate-reverse; }
-    .cinematic-opening[data-scene="walk"] .cinematic-walk-track { animation: cinematic-travel 3.2s linear both; }
+    .cinematic-opening[data-scene="walk"] .cinematic-walk-track { animation: cinematic-travel 2.15s linear both; }
     .cinematic-opening[data-scene="walk"] .cinematic-pair { transform-box: fill-box; transform-origin: center bottom; animation: cinematic-bob .48s ease-in-out infinite alternate; }
     .flight-route {
       position: absolute;
@@ -233,7 +233,7 @@
       justify-items: center;
       color: var(--coral-dark);
       transform: translateX(-12vw) rotate(4deg);
-      animation: cinematic-flight 2.8s cubic-bezier(.35,.05,.2,1) both;
+      animation: cinematic-flight 1.85s cubic-bezier(.35,.05,.2,1) both;
     }
     .cinematic-plane span { font-size: clamp(4.2rem, 10vw, 7.8rem); line-height: 1; text-shadow: 0 9px 0 rgba(40,61,59,.10); }
     .cinematic-plane b { margin-top: -7px; padding: 5px 12px; border-radius: 999px; background: #fff0ed; font-size: .78rem; }
@@ -290,13 +290,36 @@
     @keyframes wheel-turn { to { transform: rotate(360deg); } }
     @keyframes confetti-fall { from { transform: translateY(-8px); } to { transform: translateY(30px); opacity: .25; } }
 
-    .home-scene { opacity: .42; transition: opacity .35s, filter .35s; }
+    .home-scene { opacity: .42; transition: opacity .35s; }
     .home-scene .home-glow { opacity: .18; transition: opacity .35s; }
     .home-scene .window { fill: #bfd7d3; transition: fill .35s; }
-    .home-scene.active { opacity: 1; filter: drop-shadow(0 5px 7px rgba(122,76,32,.25)); }
+    .home-scene.active { opacity: 1; }
     .home-scene.active .home-glow { opacity: .78; animation: home-heart 2.2s ease-in-out infinite alternate; }
     .home-scene.active .window { fill: #ffd96c; }
+    .home-rest { opacity: 0; pointer-events: none; }
+    .home-scene.resting .home-rest { opacity: 1; }
+    .home-scene.resting .home-exterior { opacity: .08; }
+    .home-scene.resting .home-glow { animation: none; }
+    .home-scene.resting .rest-person { animation: rest-breathe 1.45s ease-in-out infinite alternate; }
+    .home-scene.resting .rest-person.alt { animation-delay: -.72s; }
+    .home-scene.resting .home-zzz { animation: zzz-float 1.6s ease-in-out infinite; }
+    .home-scene.resting .home-steam { stroke-dasharray: 5 7; animation: steam-rise 1.3s linear infinite; }
     @keyframes home-heart { to { transform: translateY(-2px) scale(1.08); } }
+    @keyframes rest-breathe { to { opacity: .78; } }
+    @keyframes zzz-float { 50% { opacity: .4; } }
+    @keyframes steam-rise { to { stroke-dashoffset: -24; } }
+
+    .transport-scene { opacity: 0; pointer-events: none; transition: opacity .2s ease; }
+    .transport-scene.active { opacity: 1; }
+    .transport-scene.active .vehicle-bob { transform-box: fill-box; transform-origin: center bottom; animation: vehicle-bob .42s ease-in-out infinite alternate; }
+    .transport-scene.active .train-wheel { transform-box: fill-box; transform-origin: center; animation: wheel-turn .72s linear infinite; }
+    .transport-scene.active .train-steam { animation: train-steam 1.05s ease-out infinite; }
+    .transport-scene.active .plane-wing { transform-box: fill-box; transform-origin: center; animation: plane-wing .36s ease-in-out infinite alternate; }
+    .transport-scene.active .plane-trail { stroke-dasharray: 7 9; animation: plane-trail .8s linear infinite; }
+    @keyframes vehicle-bob { to { transform: translateY(-3px); } }
+    @keyframes train-steam { to { transform: translate(-10px,-9px) scale(1.2); opacity: 0; } }
+    @keyframes plane-wing { to { transform: rotate(3deg); } }
+    @keyframes plane-trail { to { stroke-dashoffset: 32; } }
 
     .holiday-scene .palm-top { transform-box: fill-box; transform-origin: center bottom; }
     .holiday-scene.active .palm-top { animation: palm-sway 3.5s ease-in-out infinite alternate; }
@@ -318,6 +341,8 @@
 
     #travelerWrapper { transition: opacity .28s ease; }
     #travelerWrapper.opening-hidden,
+    #travelerWrapper.transporting,
+    #travelerWrapper.resting,
     #travelerWrapper.swimming,
     #travelerWrapper.parading { opacity: 0; filter: none; }
     .duo-bob { transform-box: fill-box; transform-origin: center bottom; }
@@ -332,6 +357,8 @@
     #travelerWrapper.walking .walking-arm.alt { animation-direction: alternate-reverse; }
     .map-card.paused .walking-arm { animation-play-state: paused; }
     .map-card.paused .festival-scene.active *,
+    .map-card.paused .home-scene.active *,
+    .map-card.paused .transport-scene.active *,
     .map-card.paused #travelerWrapper * { animation-play-state: paused !important; }
     #travelerWrapper.walking .travel-bag { animation: bag-roll .413s ease-in-out infinite alternate; }
     .step-puffs { opacity: 0; transition: opacity .2s; }
@@ -575,7 +602,7 @@
     <header class="hero">
       <p class="eyebrow">Two girls, one Spain trip</p>
       <h1>우리 둘의 <span>스페인 대모험</span></h1>
-      <p class="subtitle">바르셀로나 → 마드리드 → 마요르카 → 마드리드 → 바르셀로나<br>민주와 윤하가 사뿐사뿐 걸어 만나는 10박의 여행</p>
+      <p class="subtitle">바르셀로나 → 마드리드 → 마요르카 → 마드리드 → 바르셀로나<br>민주와 윤하가 기차와 비행기로 이어가는 10박의 여행</p>
     </header>
 
     <section class="map-card" id="mapCard" aria-label="민주와 윤하의 스페인 여행 애니메이션">
@@ -583,7 +610,7 @@
       <div class="map-stage">
         <svg id="travelMap" viewBox="0 0 1000 660" role="img" aria-labelledby="mapTitle mapDesc" preserveAspectRatio="xMidYMid meet">
           <title id="mapTitle">두 여자 친구의 스페인 여행 경로</title>
-          <desc id="mapDesc">민주와 윤하가 바르셀로나에서 윤하네 마드리드 집과 마요르카를 거쳐 다시 바르셀로나로 돌아오는 걷기 애니메이션 지도</desc>
+          <desc id="mapDesc">민주와 윤하가 기차와 비행기로 바르셀로나, 마드리드, 마요르카를 여행하는 애니메이션 지도</desc>
           <defs>
             <pattern id="wavePattern" width="84" height="42" patternUnits="userSpaceOnUse">
               <path d="M0 22 Q21 5 42 22 T84 22" fill="none" stroke="rgba(255,255,255,.34)" stroke-width="3" stroke-linecap="round"/>
@@ -669,18 +696,57 @@
 
           <!-- 윤하가 실제로 사는 마드리드 집 -->
           <g id="madridHome" class="home-scene" transform="translate(430 100) scale(.82)" aria-label="윤하가 사는 마드리드 집">
-            <circle class="home-glow" cx="0" cy="13" r="57" fill="#ffd96c"/>
-            <path d="M-39 4 0-30 39 4v55h-78Z" fill="#fff8e8" stroke="#283d3b" stroke-width="4" stroke-linejoin="round"/>
-            <path d="m-47 7 47-44L47 7" fill="none" stroke="#c84f43" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
-            <rect class="window" x="-27" y="13" width="20" height="21" rx="3" stroke="#283d3b" stroke-width="3"/>
-            <rect class="window" x="8" y="13" width="20" height="21" rx="3" stroke="#283d3b" stroke-width="3"/>
-            <path d="M-17 13v21m35-21v21M-27 24h20M8 24h20" stroke="#fffdf6" stroke-width="2"/>
-            <rect x="-9" y="33" width="18" height="26" rx="5" fill="#f46f5f" stroke="#283d3b" stroke-width="3"/>
-            <circle cx="4" cy="47" r="1.8" fill="#fff8e8"/>
-            <path d="M-48 59h96" stroke="#6d9c78" stroke-width="7" stroke-linecap="round"/>
-            <text class="home-glow" x="34" y="-27" fill="#f46f5f" font-size="28">♥</text>
-            <text x="0" y="82" text-anchor="middle" class="festival-label" style="font-size:13px">YUNHA'S MADRID HOME</text>
-            <text x="0" y="98" text-anchor="middle" class="festival-sub">윤하네 집 · Madrid</text>
+            <g class="home-exterior">
+              <circle class="home-glow" cx="0" cy="13" r="57" fill="#ffd96c"/>
+              <path d="M-39 4 0-30 39 4v55h-78Z" fill="#fff8e8" stroke="#283d3b" stroke-width="4" stroke-linejoin="round"/>
+              <path d="m-47 7 47-44L47 7" fill="none" stroke="#c84f43" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+              <rect class="window" x="-27" y="13" width="20" height="21" rx="3" stroke="#283d3b" stroke-width="3"/>
+              <rect class="window" x="8" y="13" width="20" height="21" rx="3" stroke="#283d3b" stroke-width="3"/>
+              <path d="M-17 13v21m35-21v21M-27 24h20M8 24h20" stroke="#fffdf6" stroke-width="2"/>
+              <rect x="-9" y="33" width="18" height="26" rx="5" fill="#f46f5f" stroke="#283d3b" stroke-width="3"/>
+              <circle cx="4" cy="47" r="1.8" fill="#fff8e8"/>
+              <path d="M-48 59h96" stroke="#6d9c78" stroke-width="7" stroke-linecap="round"/>
+              <text class="home-glow" x="34" y="-27" fill="#f46f5f" font-size="28">♥</text>
+              <text x="0" y="82" text-anchor="middle" class="festival-label" style="font-size:13px">YUNHA'S MADRID HOME</text>
+              <text x="0" y="98" text-anchor="middle" class="festival-sub">윤하네 집 · Madrid</text>
+            </g>
+
+            <g class="home-rest" aria-label="민주와 윤하가 소파에서 쉬는 장면">
+              <rect x="-125" y="-65" width="250" height="174" rx="25" fill="#fffdf6" stroke="rgba(40,61,59,.2)" stroke-width="3"/>
+              <path d="M-105-40h210" stroke="#f7d8ba" stroke-width="10" stroke-linecap="round"/>
+              <text x="0" y="-35" text-anchor="middle" class="festival-label" style="font-size:14px">MADRID HOME · 쉬어가는 밤</text>
+              <rect x="-94" y="22" width="188" height="58" rx="21" fill="#e7a38b" stroke="#283d3b" stroke-width="3"/>
+              <rect x="-106" y="40" width="25" height="53" rx="11" fill="#c97969" stroke="#283d3b" stroke-width="3"/>
+              <rect x="81" y="40" width="25" height="53" rx="11" fill="#c97969" stroke="#283d3b" stroke-width="3"/>
+              <path d="M-78 79H78v17H-78Z" fill="#b66359" stroke="#283d3b" stroke-width="3"/>
+              <g transform="translate(-43 17)">
+                <g class="rest-person">
+                  <circle cy="0" r="17" fill="#ffd2b8" stroke="#283d3b" stroke-width="2.5"/>
+                  <path d="M-17 1q1-22 17-22T17 1Q7-2 1-12-6-2-17 1Z" fill="#5b3d33"/>
+                  <path d="M-7 2q3 3 6 0m4 0q3 3 6 0" fill="none" stroke="#283d3b" stroke-width="2.4" stroke-linecap="round"/>
+                  <path d="M-8-18q8-9 17 0" fill="none" stroke="#f46f5f" stroke-width="5" stroke-linecap="round"/>
+                  <path d="M-13 18q13-8 26 0v30h-26Z" fill="#73b3c7" stroke="#283d3b" stroke-width="2.5"/>
+                </g>
+              </g>
+              <g transform="translate(36 17)">
+                <g class="rest-person alt">
+                  <path d="M-18 2q0-24 18-24T18 2v31h-36Z" fill="#342f33"/>
+                  <circle cy="0" r="17" fill="#f6c8a8" stroke="#283d3b" stroke-width="2.5"/>
+                  <path d="M-17 1q1-22 17-22T17 1Q7-2 1-12-6-2-17 1Z" fill="#342f33"/>
+                  <path d="M-7 2q3 3 6 0m4 0q3 3 6 0" fill="none" stroke="#283d3b" stroke-width="2.4" stroke-linecap="round"/>
+                  <path d="M-13-15q13-8 26 0" fill="none" stroke="#f5ba45" stroke-width="5" stroke-linecap="round"/>
+                  <path d="M-13 18q13-8 26 0v30h-26Z" fill="#f7c85c" stroke="#283d3b" stroke-width="2.5"/>
+                </g>
+              </g>
+              <path d="M-64 55q64-20 128 0v28H-64Z" fill="#fff0c8" stroke="#e3a72d" stroke-width="2.5"/>
+              <text class="home-zzz" x="78" y="10" fill="#367e9b" font-size="18" font-weight="950">Zzz</text>
+              <g transform="translate(93 82)">
+                <path class="home-steam" d="M-5-16q-7-8 0-15m8 15q7-8 0-15" fill="none" stroke="#fffdf6" stroke-width="3" stroke-linecap="round"/>
+                <path d="M-13-15h25v24h-25Z" fill="#73b3c7" stroke="#283d3b" stroke-width="3"/>
+                <path d="M12-9q14 0 9 12H12" fill="none" stroke="#283d3b" stroke-width="3"/>
+              </g>
+              <text x="0" y="104" text-anchor="middle" class="festival-sub">소파에 폭 기대어 충전 중 · ☕</text>
+            </g>
           </g>
 
           <!-- 바르셀로나 라 메르세: 인간탑, 코레포크, 실제로 걷는 거리 행진 -->
@@ -852,7 +918,48 @@
             <text x="0" y="121" text-anchor="middle" class="festival-sub">바다 수영 · 야자수 · 느긋한 4박</text>
           </g>
 
-          <g id="travelerWrapper" transform="translate(625 240)" aria-label="함께 걷는 민주와 윤하">
+          <!-- 도시 사이를 이동하는 민주와 윤하의 기차 -->
+          <g id="trainTransport" class="transport-scene" aria-label="민주와 윤하가 함께 탄 기차">
+            <g transform="translate(-66 -50)">
+              <g class="vehicle-bob">
+                <ellipse cx="62" cy="83" rx="58" ry="9" fill="rgba(40,61,59,.2)"/>
+                <rect x="8" y="20" width="104" height="55" rx="17" fill="#f46f5f" stroke="#283d3b" stroke-width="4"/>
+                <path d="M90 20h22q17 13 17 34v21H90Z" fill="#c84f43" stroke="#283d3b" stroke-width="4" stroke-linejoin="round"/>
+                <rect x="20" y="31" width="29" height="25" rx="7" fill="#dff5f3" stroke="#283d3b" stroke-width="3"/>
+                <rect x="55" y="31" width="29" height="25" rx="7" fill="#dff5f3" stroke="#283d3b" stroke-width="3"/>
+                <g transform="translate(35 45)">
+                  <circle r="9" fill="#ffd2b8"/><path d="M-9 0q1-11 9-11T9 0Q4-2 0-6-3-1-9 0Z" fill="#5b3d33"/><path d="M-6-8-10-12l1 7m15-3 4-4-1 7" stroke="#f46f5f" stroke-width="3"/>
+                </g>
+                <g transform="translate(69 45)">
+                  <circle r="9" fill="#f6c8a8"/><path d="M-9 1q0-12 9-12T9 1v8H6V0Q3-2 0-6-3-1-6 0v9h-3Z" fill="#342f33"/><path d="M-8-7q8-5 16 0" fill="none" stroke="#f5ba45" stroke-width="3"/>
+                </g>
+                <path d="M12 62h100" stroke="#fff8e8" stroke-width="5"/>
+                <circle class="train-wheel" cx="31" cy="77" r="12" fill="#367e9b" stroke="#283d3b" stroke-width="4"/>
+                <circle class="train-wheel" cx="93" cy="77" r="12" fill="#367e9b" stroke="#283d3b" stroke-width="4"/>
+                <path d="M23 8h37v13H23Z" fill="#f5ba45" stroke="#283d3b" stroke-width="4"/>
+                <g class="train-steam" fill="#fffdf6" opacity=".9"><circle cx="25" cy="2" r="8"/><circle cx="15" cy="-6" r="6"/></g>
+              </g>
+            </g>
+          </g>
+
+          <!-- 마요르카를 왕복하는 민주와 윤하의 비행기 -->
+          <g id="planeTransport" class="transport-scene" aria-label="민주와 윤하가 함께 탄 비행기">
+            <g transform="translate(-71 -48)">
+              <g class="vehicle-bob">
+                <path class="plane-trail" d="M6 54H-34" fill="none" stroke="#fffdf6" stroke-width="6" stroke-linecap="round"/>
+                <path d="M8 38h82l32 14-32 13H8Q-6 63-9 52-6 41 8 38Z" fill="#fffdf6" stroke="#283d3b" stroke-width="4" stroke-linejoin="round"/>
+                <path class="plane-wing" d="m49 40 21-31h19L77 43m-28 20 21 28h19L77 61" fill="#73b3c7" stroke="#283d3b" stroke-width="4" stroke-linejoin="round"/>
+                <path d="m15 39-7-24h16l18 25m-27 24L8 82h16l18-19" fill="#f46f5f" stroke="#283d3b" stroke-width="4" stroke-linejoin="round"/>
+                <circle cx="42" cy="51" r="9" fill="#bce6e2" stroke="#367e9b" stroke-width="3"/>
+                <circle cx="64" cy="51" r="9" fill="#bce6e2" stroke="#367e9b" stroke-width="3"/>
+                <circle cx="41" cy="51" r="5" fill="#ffd2b8"/><path d="M36 49q1-7 5-7t5 7" fill="#5b3d33"/>
+                <circle cx="63" cy="51" r="5" fill="#f6c8a8"/><path d="M58 49q1-7 5-7t5 7" fill="#342f33"/>
+                <path d="M96 46h17" stroke="#f5ba45" stroke-width="4" stroke-linecap="round"/>
+              </g>
+            </g>
+          </g>
+
+          <g id="travelerWrapper" transform="translate(625 240)" aria-label="함께 여행하는 민주와 윤하">
             <g transform="translate(-61 -104)">
               <g class="duo-bob">
               <ellipse cx="61" cy="108" rx="58" ry="10" fill="rgba(43,75,70,.18)"/>
@@ -964,15 +1071,15 @@
         </div>
       </article>
     </section>
-    <p class="note">도시를 누르면 민주와 윤하가 그 장면으로 바로 이동해요 · 전체 여정은 자연스럽게 반복됩니다</p>
+    <p class="note">도시를 누르면 민주와 윤하가 그 장면으로 바로 이동해요 · 기차와 비행기로 전체 여정이 자연스럽게 반복됩니다</p>
   </main>
 
   <script>
     const segments = [
-      { from: '바르셀로나', to: '마드리드', date: '9/28', mode: '👣' },
-      { from: '마드리드', to: '마요르카', date: '9/30', mode: '👣' },
-      { from: '마요르카', to: '마드리드', date: '10/4', mode: '👣' },
-      { from: '마드리드', to: '바르셀로나', date: '10/6', mode: '👣' }
+      { from: '바르셀로나', to: '마드리드', date: '9/28', mode: '🚆', transport: 'train', direction: -1, detail: '민주와 윤하가 기차를 타고 마드리드로 달리는 중이에요' },
+      { from: '마드리드', to: '마요르카', date: '9/30', mode: '✈️', transport: 'plane', direction: 1, detail: '민주와 윤하가 비행기를 타고 마요르카로 날아가는 중이에요' },
+      { from: '마요르카', to: '마드리드', date: '10/4', mode: '✈️', transport: 'plane', direction: -1, detail: '민주와 윤하가 비행기를 타고 마드리드로 돌아가는 중이에요' },
+      { from: '마드리드', to: '바르셀로나', date: '10/6', mode: '🚆', transport: 'train', direction: 1, detail: '민주와 윤하가 기차를 타고 바르셀로나로 달리는 중이에요' }
     ];
     const paths = segments.map((_, index) => document.querySelector(`#route${index}`));
     const cities = [
@@ -993,6 +1100,8 @@
     const routeStops = [...document.querySelectorAll('.route-stop')];
     const cinematicOpening = document.querySelector('#cinematicOpening');
     const skipOpening = document.querySelector('#skipOpening');
+    const trainTransport = document.querySelector('#trainTransport');
+    const planeTransport = document.querySelector('#planeTransport');
     const barcelonaFestival = document.querySelector('#festivalBarcelona');
     const madridFestival = document.querySelector('#festivalMadrid');
     const madridHome = document.querySelector('#madridHome');
@@ -1000,10 +1109,10 @@
     const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     const phases = [
-      { type: 'opening', duration: 9000, completed: 0 },
+      { type: 'opening', duration: 6000, completed: 0 },
       { type: 'stop', city: 0, duration: 5200, completed: 0, emoji: '💃', title: '라 메르세 거리에서 춤을!', detail: '9/26–27 · 민주와 윤하가 행진단과 함께 춤춰요', festival: 'barcelona' },
       { type: 'move', segment: 0, duration: 6000, completed: 0 },
-      { type: 'stop', city: 1, duration: 3600, completed: 1, emoji: '🏠', title: '마드리드, 윤하네 집 도착!', detail: '9/28 · 윤하의 Madrid home에서 포근하게 쉬어요', home: true },
+      { type: 'stop', city: 1, duration: 4600, completed: 1, emoji: '🛋️', title: '마드리드 집에서 푹 쉬는 밤!', detail: '9/28 · 민주와 윤하가 소파에 기대어 느긋하게 충전해요', home: true, resting: true },
       { type: 'move', segment: 1, duration: 6000, completed: 1 },
       { type: 'stop', city: 2, duration: 6200, completed: 2, emoji: '🏊‍♀️', title: '마요르카 바다로 풍덩!', detail: '9/30–10/4 · 민주와 윤하가 파도 사이를 헤엄쳐요', holiday: true },
       { type: 'move', segment: 2, duration: 6000, completed: 2 },
@@ -1043,6 +1152,14 @@
       else placeTraveler(cityIndex - 1, 1);
     }
 
+    function placeTransport(segmentIndex, segmentProgress) {
+      const segment = segments[segmentIndex];
+      const path = paths[segmentIndex];
+      const point = path.getPointAtLength(path.getTotalLength() * ease(segmentProgress));
+      const transport = segment.transport === 'train' ? trainTransport : planeTransport;
+      transport.setAttribute('transform', `translate(${point.x} ${point.y}) scale(${segment.direction} 1)`);
+    }
+
     function getPhaseAt(time) {
       let phaseIndex = phases.length - 1;
       for (let index = 0; index < phases.length; index += 1) {
@@ -1063,18 +1180,24 @@
         if (index < phase.completed) path.classList.add('completed');
       });
       const isOpening = phase.type === 'opening';
-      const openingSceneName = localTime < 3300 ? 'walk' : localTime < 6200 ? 'flight' : 'reunion';
+      const openingSceneName = localTime < 2200 ? 'walk' : localTime < 4100 ? 'flight' : 'reunion';
       if (isOpening) cinematicOpening.dataset.scene = openingSceneName;
       cinematicOpening.classList.toggle('active', isOpening);
-      cinematicOpening.classList.toggle('finishing', isOpening && localTime >= 8500);
+      cinematicOpening.classList.toggle('finishing', isOpening && localTime >= 5650);
       cinematicOpening.setAttribute('aria-hidden', String(!isOpening));
       document.body.classList.toggle('opening-active', isOpening);
       barcelonaFestival.classList.toggle('active', phase.festival === 'barcelona');
       madridFestival.classList.toggle('active', phase.festival === 'madrid');
       madridHome.classList.toggle('active', phase.home === true);
+      madridHome.classList.toggle('resting', phase.resting === true);
       mallorcaHoliday.classList.toggle('active', phase.holiday === true);
+      const movingSegment = phase.type === 'move' ? segments[phase.segment] : null;
+      trainTransport.classList.toggle('active', movingSegment?.transport === 'train');
+      planeTransport.classList.toggle('active', movingSegment?.transport === 'plane');
       traveler.classList.toggle('opening-hidden', isOpening);
-      traveler.classList.toggle('walking', phase.type === 'move');
+      traveler.classList.toggle('transporting', phase.type === 'move');
+      traveler.classList.toggle('resting', phase.resting === true);
+      traveler.classList.toggle('walking', false);
       traveler.classList.toggle('swimming', phase.holiday === true);
       traveler.classList.toggle('parading', Boolean(phase.festival));
       traveler.classList.toggle('celebrating', phase.type === 'stop' && Boolean(phase.festival));
@@ -1089,11 +1212,12 @@
         const segmentProgress = Math.min(1, localTime / phase.duration);
         const segment = segments[phase.segment];
         placeTraveler(phase.segment, segmentProgress);
+        placeTransport(phase.segment, segmentProgress);
         paths[phase.segment].classList.add('active');
         setActiveCity(segmentProgress < .28 ? phase.segment : phase.segment + 1);
         statusEmoji.textContent = segment.mode;
         statusTitle.textContent = `${segment.from}에서 ${segment.to}로!`;
-        statusDetail.textContent = `${segment.date} · 민주와 윤하가 경쾌하게 걸어가는 중이에요`;
+        statusDetail.textContent = `${segment.date} · ${segment.detail}`;
       } else {
         placeAtCity(phase.city);
         setActiveCity(phase.city);
