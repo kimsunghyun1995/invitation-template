@@ -138,6 +138,11 @@
     #festivalBarcelona.active .fire-spark.f3 { animation-delay: -.39s; }
     #festivalBarcelona.active .street-parade { animation: street-march 3.4s ease-in-out infinite alternate; }
     #festivalMadrid.active .parade-float { animation: parade-roll 3.6s ease-in-out infinite alternate; }
+    #festivalBarcelona.active .trip-dancer { transform-box: fill-box; transform-origin: center bottom; animation: festival-dance .52s ease-in-out infinite alternate; }
+    #festivalBarcelona.active .trip-dancer.alt { animation-direction: alternate-reverse; }
+    #festivalMadrid.active .float-rider { transform-box: fill-box; transform-origin: center bottom; animation: rider-bounce .68s ease-in-out infinite alternate; }
+    #festivalMadrid.active .float-rider.alt { animation-delay: -.34s; }
+    .festival-name { fill: #283d3b; font-size: 8px; font-weight: 950; text-anchor: middle; paint-order: stroke; stroke: #fffdf6; stroke-width: 3; }
     .festival-scene.active .march-leg,
     .festival-scene.active .march-arm { transform-box: fill-box; transform-origin: center top; animation: march-limb .48s ease-in-out infinite alternate; }
     .festival-scene.active .march-leg.alt,
@@ -151,6 +156,8 @@
     @keyframes fire-pop { to { transform: translateY(-4px) scale(.88); opacity: .55; } }
     @keyframes street-march { from { transform: translateX(-13px); } to { transform: translateX(13px); } }
     @keyframes parade-roll { from { transform: translateX(-10px); } to { transform: translateX(10px); } }
+    @keyframes festival-dance { from { transform: rotate(-5deg) translateY(1px); } to { transform: rotate(5deg) translateY(-3px); } }
+    @keyframes rider-bounce { to { transform: translateY(-3px) rotate(2deg); } }
     @keyframes march-limb { from { transform: rotate(-18deg); } to { transform: rotate(18deg); } }
     @keyframes drum-beat { to { transform: rotate(-22deg); } }
     @keyframes wheel-turn { to { transform: rotate(360deg); } }
@@ -183,25 +190,26 @@
     @keyframes splash-flow { to { stroke-dashoffset: -26; } }
 
     #travelerWrapper { transition: opacity .28s ease; }
-    #travelerWrapper.swimming { opacity: 0; filter: none; }
+    #travelerWrapper.swimming,
+    #travelerWrapper.parading { opacity: 0; filter: none; }
     .duo-bob { transform-box: fill-box; transform-origin: center bottom; }
-    #travelerWrapper.walking .duo-bob { animation: walk-lift .62s ease-in-out infinite alternate; }
+    #travelerWrapper.walking .duo-bob { animation: walk-lift .413s ease-in-out infinite alternate; }
     #travelerWrapper.celebrating .duo-bob { animation: happy-hop .72s ease-in-out infinite alternate; }
     .walking-leg { transform-box: fill-box; transform-origin: center top; }
-    #travelerWrapper.walking .walking-leg { animation: gentle-step .62s ease-in-out infinite alternate; }
+    #travelerWrapper.walking .walking-leg { animation: gentle-step .413s ease-in-out infinite alternate; }
     #travelerWrapper.walking .walking-leg.alt { animation-direction: alternate-reverse; }
     .map-card.paused .walking-leg { animation-play-state: paused; }
     .walking-arm { transform-box: fill-box; transform-origin: center top; }
-    #travelerWrapper.walking .walking-arm { animation: gentle-arm .62s ease-in-out infinite alternate; }
+    #travelerWrapper.walking .walking-arm { animation: gentle-arm .413s ease-in-out infinite alternate; }
     #travelerWrapper.walking .walking-arm.alt { animation-direction: alternate-reverse; }
     .map-card.paused .walking-arm { animation-play-state: paused; }
     .map-card.paused .festival-scene.active *,
     .map-card.paused #travelerWrapper * { animation-play-state: paused !important; }
-    #travelerWrapper.walking .travel-bag { animation: bag-roll .62s ease-in-out infinite alternate; }
+    #travelerWrapper.walking .travel-bag { animation: bag-roll .413s ease-in-out infinite alternate; }
     .step-puffs { opacity: 0; transition: opacity .2s; }
     #travelerWrapper.walking .step-puffs { opacity: 1; }
-    #travelerWrapper.walking .step-puff { transform-box: fill-box; transform-origin: center; animation: step-puff 1.24s ease-out infinite; }
-    #travelerWrapper.walking .step-puff.p2 { animation-delay: -.62s; }
+    #travelerWrapper.walking .step-puff { transform-box: fill-box; transform-origin: center; animation: step-puff .827s ease-out infinite; }
+    #travelerWrapper.walking .step-puff.p2 { animation-delay: -.413s; }
     .name-tag { fill: #fffdf6; stroke: rgba(40,61,59,.28); stroke-width: 1.5; }
     .name-tag.minju { fill: #fff0ed; stroke: #f46f5f; }
     .name-tag.yunha { fill: #fff7d8; stroke: #e3a72d; }
@@ -324,7 +332,7 @@
     <header class="hero">
       <p class="eyebrow">Two girls, one Spain trip</p>
       <h1>우리 둘의 <span>스페인 대모험</span></h1>
-      <p class="subtitle">바르셀로나 → 마드리드 → 마요르카 → 마드리드 → 바르셀로나<br>민주와 윤하가 천천히 걸어 만나는 10박의 여행</p>
+      <p class="subtitle">바르셀로나 → 마드리드 → 마요르카 → 마드리드 → 바르셀로나<br>민주와 윤하가 사뿐사뿐 걸어 만나는 10박의 여행</p>
     </header>
 
     <section class="map-card" id="mapCard" aria-label="민주와 윤하의 스페인 여행 애니메이션">
@@ -332,7 +340,7 @@
       <div class="map-stage">
         <svg id="travelMap" viewBox="0 0 1000 660" role="img" aria-labelledby="mapTitle mapDesc" preserveAspectRatio="xMidYMid meet">
           <title id="mapTitle">두 여자 친구의 스페인 여행 경로</title>
-          <desc id="mapDesc">민주와 윤하가 바르셀로나에서 윤하네 마드리드 집과 마요르카를 거쳐 다시 바르셀로나로 돌아오는 느린 걷기 애니메이션 지도</desc>
+          <desc id="mapDesc">민주와 윤하가 바르셀로나에서 윤하네 마드리드 집과 마요르카를 거쳐 다시 바르셀로나로 돌아오는 걷기 애니메이션 지도</desc>
           <defs>
             <pattern id="wavePattern" width="84" height="42" patternUnits="userSpaceOnUse">
               <path d="M0 22 Q21 5 42 22 T84 22" fill="none" stroke="rgba(255,255,255,.34)" stroke-width="3" stroke-linecap="round"/>
@@ -450,12 +458,17 @@
               <path d="M-16 28H126" stroke="#dfb06d" stroke-width="4" stroke-linecap="round" stroke-dasharray="5 8"/>
               <g class="street-parade">
                 <g transform="translate(0 -1)" stroke="#283d3b" stroke-width="2.4" stroke-linecap="round">
-                  <circle cx="10" cy="5" r="7" fill="#f6c8a8"/>
-                  <path d="M10 12v16" stroke="#f46f5f" stroke-width="9"/>
-                  <path class="march-arm" d="M7 15-2 22"/><path class="march-arm alt" d="M13 15 22 21"/>
-                  <path class="march-leg" d="M7 27 3 36"/><path class="march-leg alt" d="M13 27 18 36"/>
-                  <path d="M1 36h6m8 0h6" stroke="#367e9b" stroke-width="3"/>
-                  <path d="M3-1q7-8 14 0" fill="#ffd96c" stroke="#c84f43"/>
+                  <g class="trip-dancer">
+                    <text class="festival-name" x="10" y="-10" stroke="none">민주</text>
+                    <path d="M2 6q0-10 8-10t8 10v5H2Z" fill="#5b3d33" stroke="none"/>
+                    <circle cx="10" cy="5" r="7" fill="#ffd2b8"/>
+                    <path d="M3 3q2-8 7-8t7 8q-5-1-7-5-2 4-7 5Z" fill="#5b3d33" stroke="none"/>
+                    <path d="M4-3 0-7l1 7m13-3 5-4-2 7" fill="#f46f5f" stroke="none"/>
+                    <path d="M10 12v16" stroke="#73b3c7" stroke-width="9"/>
+                    <path class="march-arm" d="M7 15-2 22"/><path class="march-arm alt" d="M13 15 22 21"/>
+                    <path class="march-leg" d="M7 27 3 36"/><path class="march-leg alt" d="M13 27 18 36"/>
+                    <path d="M1 36h6m8 0h6" stroke="#f46f5f" stroke-width="3"/>
+                  </g>
                 </g>
                 <g transform="translate(43 1)" stroke="#283d3b" stroke-width="2.4" stroke-linecap="round">
                   <circle cx="10" cy="4" r="7" fill="#efb38f"/>
@@ -466,12 +479,18 @@
                   <path d="M1 36h6m8 0h6" stroke="#f46f5f" stroke-width="3"/>
                 </g>
                 <g transform="translate(87 -1)" stroke="#283d3b" stroke-width="2.4" stroke-linecap="round">
-                  <circle cx="10" cy="5" r="7" fill="#d99a79"/>
-                  <path d="M10 12v16" stroke="#6d9c78" stroke-width="9"/>
-                  <path class="march-arm alt" d="M7 15-2 21"/><path class="march-arm" d="M13 15 22 22"/>
-                  <path class="march-leg" d="M7 27 3 36"/><path class="march-leg alt" d="M13 27 18 36"/>
-                  <path d="M1 36h6m8 0h6" stroke="#f5ba45" stroke-width="3"/>
-                  <path d="M5-2h10l4 5H1Z" fill="#f46f5f"/>
+                  <g class="trip-dancer alt">
+                    <text class="festival-name" x="10" y="-10" stroke="none">윤하</text>
+                    <path d="M2 5q0-11 8-11t8 11v13H2Z" fill="#342f33" stroke="none"/>
+                    <circle cx="10" cy="5" r="7" fill="#f6c8a8"/>
+                    <path d="M3 3q1-8 7-8t7 8q-5-1-7-5-2 4-7 5Z" fill="#342f33" stroke="none"/>
+                    <path d="M3-2q7-5 14 0" fill="none" stroke="#f5ba45" stroke-width="2.5"/>
+                    <circle cx="18" cy="-3" r="2.5" fill="#f46f5f" stroke="none"/>
+                    <path d="M10 12v16" stroke="#f7c85c" stroke-width="9"/>
+                    <path class="march-arm alt" d="M7 15-2 21"/><path class="march-arm" d="M13 15 22 22"/>
+                    <path class="march-leg" d="M7 27 3 36"/><path class="march-leg alt" d="M13 27 18 36"/>
+                    <path d="M1 36h6m8 0h6" stroke="#367e9b" stroke-width="3"/>
+                  </g>
                 </g>
               </g>
             </g>
@@ -495,10 +514,28 @@
                 <circle class="parade-wheel" cx="25" cy="59" r="8" fill="#283d3b" stroke="#fff8e8" stroke-width="2"/>
                 <circle class="parade-wheel" cx="101" cy="59" r="8" fill="#283d3b" stroke="#fff8e8" stroke-width="2"/>
                 <path d="M25 54v10m-5-5h10m71-5v10m-5-5h10" stroke="#fff8e8" stroke-width="1.7"/>
-                <g stroke="#283d3b" stroke-width="3" stroke-linecap="round">
-                  <circle cx="39" cy="15" r="7" fill="#f1bc98"/><path d="M39 22v15"/><path class="march-arm" d="M39 27 29 34"/><path class="march-arm alt" d="M39 27 49 34"/>
-                  <circle cx="63" cy="11" r="7" fill="#f5c5a8"/><path d="M63 18v18"/><path class="march-arm alt" d="M63 25 53 17"/><path class="march-arm" d="M63 25 74 15"/>
-                  <circle cx="86" cy="15" r="7" fill="#d99a79"/><path d="M86 22v15"/><path class="march-arm" d="M86 27 76 34"/><path class="march-arm alt" d="M86 27 96 34"/>
+                <g transform="translate(38 11)" stroke="#283d3b" stroke-width="2.6" stroke-linecap="round">
+                  <g class="float-rider">
+                    <text class="festival-name" x="0" y="-13" stroke="none">민주</text>
+                    <path d="M-8 4q0-12 8-12T8 4v8H-8Z" fill="#5b3d33" stroke="none"/>
+                    <circle r="7" fill="#ffd2b8"/>
+                    <path d="M-7-1q2-7 7-7t7 7q-4-1-7-4-2 3-7 4Z" fill="#5b3d33" stroke="none"/>
+                    <path d="M-5-7-10-11l1 7m14-3 5-4-2 7" fill="#f46f5f" stroke="none"/>
+                    <path d="M0 7v18" stroke="#73b3c7" stroke-width="9"/>
+                    <path class="march-arm" d="M-3 11-12 3"/><path class="march-arm alt" d="M3 11 12 2"/>
+                  </g>
+                </g>
+                <g transform="translate(88 11)" stroke="#283d3b" stroke-width="2.6" stroke-linecap="round">
+                  <g class="float-rider alt">
+                    <text class="festival-name" x="0" y="-13" stroke="none">윤하</text>
+                    <path d="M-8 4q0-12 8-12T8 4v16H-8Z" fill="#342f33" stroke="none"/>
+                    <circle r="7" fill="#f6c8a8"/>
+                    <path d="M-7-1q2-7 7-7t7 7q-4-1-7-4-2 3-7 4Z" fill="#342f33" stroke="none"/>
+                    <path d="M-7-6q7-5 14 0" fill="none" stroke="#f5ba45" stroke-width="2.6"/>
+                    <circle cx="8" cy="-7" r="2.5" fill="#f46f5f" stroke="none"/>
+                    <path d="M0 7v18" stroke="#f7c85c" stroke-width="9"/>
+                    <path class="march-arm alt" d="M-3 11-12 2"/><path class="march-arm" d="M3 11 12 3"/>
+                  </g>
                 </g>
                 <path d="M63 3V-8" stroke="#283d3b" stroke-width="3"/><path d="M64-8h17l-5 6 5 6H64Z" fill="#367e9b"/>
               </g>
@@ -684,7 +721,7 @@
         </div>
       </article>
     </section>
-    <p class="note">도시를 누르면 민주와 윤하가 그 장면으로 바로 이동해요 · 전체 여정은 느리게 반복됩니다</p>
+    <p class="note">도시를 누르면 민주와 윤하가 그 장면으로 바로 이동해요 · 전체 여정은 자연스럽게 반복됩니다</p>
   </main>
 
   <script>
@@ -718,14 +755,14 @@
     const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     const phases = [
-      { type: 'stop', city: 0, duration: 5200, completed: 0, emoji: '🔥', title: '라 메르세 거리 행진 속으로!', detail: '9/26–27 · 인간탑, 코레포크와 행진단이 함께 움직여요', festival: 'barcelona' },
-      { type: 'move', segment: 0, duration: 9000, completed: 0 },
+      { type: 'stop', city: 0, duration: 5200, completed: 0, emoji: '💃', title: '라 메르세 거리에서 춤을!', detail: '9/26–27 · 민주와 윤하가 행진단과 함께 춤춰요', festival: 'barcelona' },
+      { type: 'move', segment: 0, duration: 6000, completed: 0 },
       { type: 'stop', city: 1, duration: 3600, completed: 1, emoji: '🏠', title: '마드리드, 윤하네 집 도착!', detail: '9/28 · 윤하의 Madrid home에서 포근하게 쉬어요', home: true },
-      { type: 'move', segment: 1, duration: 9000, completed: 1 },
+      { type: 'move', segment: 1, duration: 6000, completed: 1 },
       { type: 'stop', city: 2, duration: 6200, completed: 2, emoji: '🏊‍♀️', title: '마요르카 바다로 풍덩!', detail: '9/30–10/4 · 민주와 윤하가 파도 사이를 헤엄쳐요', holiday: true },
-      { type: 'move', segment: 2, duration: 9000, completed: 2 },
-      { type: 'stop', city: 3, duration: 4600, completed: 3, emoji: '🎉', title: '윤하네 집으로 돌아오니 Hispanidad!', detail: '10/4 · 그란비아를 물들이는 문화 퍼레이드', home: true, festival: 'madrid' },
-      { type: 'move', segment: 3, duration: 9000, completed: 3 },
+      { type: 'move', segment: 2, duration: 6000, completed: 2 },
+      { type: 'stop', city: 3, duration: 4600, completed: 3, emoji: '🎉', title: 'Hispanidad 퍼레이드에 탑승!', detail: '10/4 · 민주와 윤하가 퍼레이드 카를 타고 그란비아로', home: true, festival: 'madrid' },
+      { type: 'move', segment: 3, duration: 6000, completed: 3 },
       { type: 'stop', city: 4, duration: 3600, completed: 4, emoji: '💛', title: '바르셀로나에 다시 도착!', detail: '10/6 · 민주와 윤하의 스페인 한 바퀴 완성' }
     ];
     const phaseStarts = [];
@@ -785,6 +822,7 @@
       mallorcaHoliday.classList.toggle('active', phase.holiday === true);
       traveler.classList.toggle('walking', phase.type === 'move');
       traveler.classList.toggle('swimming', phase.holiday === true);
+      traveler.classList.toggle('parading', Boolean(phase.festival));
       traveler.classList.toggle('celebrating', phase.type === 'stop' && Boolean(phase.festival));
 
       if (phase.type === 'move') {
@@ -795,7 +833,7 @@
         setActiveCity(segmentProgress < .28 ? phase.segment : phase.segment + 1);
         statusEmoji.textContent = segment.mode;
         statusTitle.textContent = `${segment.from}에서 ${segment.to}로!`;
-        statusDetail.textContent = `${segment.date} · 민주와 윤하가 천천히 걸어가는 중이에요`;
+        statusDetail.textContent = `${segment.date} · 민주와 윤하가 경쾌하게 걸어가는 중이에요`;
       } else {
         placeAtCity(phase.city);
         setActiveCity(phase.city);
