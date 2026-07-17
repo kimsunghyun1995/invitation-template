@@ -128,6 +128,19 @@
     .city .date { fill: var(--blue); font-size: 17px; font-weight: 900; }
     @keyframes city-pulse { to { r: 11; } }
 
+    .opening-scene { opacity: 0; pointer-events: none; transition: opacity .4s ease; }
+    .opening-scene.active { opacity: 1; }
+    .opening-kicker { fill: #c84f43; font-size: 13px; font-weight: 950; letter-spacing: .16em; text-anchor: middle; }
+    .opening-title { fill: #283d3b; font-size: 31px; font-weight: 950; text-anchor: middle; paint-order: stroke; stroke: #fffdf6; stroke-width: 7; }
+    .opening-sub { fill: #367e9b; font-size: 13px; font-weight: 900; text-anchor: middle; }
+    .opening-scene.active .opening-content { transform-box: fill-box; transform-origin: center; animation: opening-pop .72s cubic-bezier(.2,.9,.3,1) both; }
+    .opening-scene.active .opening-star { transform-box: fill-box; transform-origin: center; animation: opening-twinkle .72s ease-in-out infinite alternate; }
+    .opening-scene.active .opening-star.s2 { animation-delay: -.3s; }
+    .opening-scene.active .opening-trail { stroke-dasharray: 5 10; animation: opening-trail 1.2s linear infinite; }
+    @keyframes opening-pop { from { opacity: 0; transform: translateY(10px) scale(.9); } }
+    @keyframes opening-twinkle { to { opacity: .4; transform: scale(.75) rotate(12deg); } }
+    @keyframes opening-trail { to { stroke-dashoffset: -30; } }
+
     .festival-scene { opacity: 0; pointer-events: none; transition: opacity .45s ease; }
     .festival-scene.active { opacity: 1; }
     .festival-label { fill: #283d3b; font-size: 16px; font-weight: 950; paint-order: stroke; stroke: rgba(255,253,246,.94); stroke-width: 6; stroke-linejoin: round; }
@@ -203,6 +216,7 @@
     #travelerWrapper.walking .walking-arm { animation: gentle-arm .413s ease-in-out infinite alternate; }
     #travelerWrapper.walking .walking-arm.alt { animation-direction: alternate-reverse; }
     .map-card.paused .walking-arm { animation-play-state: paused; }
+    .map-card.paused .opening-scene.active *,
     .map-card.paused .festival-scene.active *,
     .map-card.paused #travelerWrapper * { animation-play-state: paused !important; }
     #travelerWrapper.walking .travel-bag { animation: bag-roll .413s ease-in-out infinite alternate; }
@@ -609,7 +623,24 @@
             <text x="0" y="121" text-anchor="middle" class="festival-sub">바다 수영 · 야자수 · 느긋한 4박</text>
           </g>
 
-          <g id="travelerWrapper" transform="translate(625 240)" aria-label="함께 천천히 걷는 민주와 윤하">
+          <!-- 첫 재생 오프닝: 민주와 윤하가 바르셀로나로 걸어오며 여행을 시작 -->
+          <g id="openingScene" class="opening-scene active" aria-label="민주와 윤하 둘이 여행 시작 오프닝">
+            <path class="opening-trail" d="M790 258Q710 213 625 240" fill="none" stroke="rgba(255,253,246,.92)" stroke-width="6" stroke-linecap="round"/>
+            <g transform="translate(500 122)">
+              <g class="opening-content">
+                <rect x="-196" y="-63" width="392" height="126" rx="30" fill="#fffdf6" stroke="rgba(40,61,59,.18)" stroke-width="2.5"/>
+                <circle cx="-161" cy="-30" r="19" fill="#fff0ed"/><text x="-161" y="-23" text-anchor="middle" font-size="22">🎒</text>
+                <circle cx="161" cy="-30" r="19" fill="#fff7d8"/><text x="161" y="-23" text-anchor="middle" font-size="22">✈</text>
+                <text class="opening-kicker" x="0" y="-31">MINJU × YUNHA</text>
+                <text class="opening-title" x="0" y="11">둘이 여행 시작!</text>
+                <text class="opening-sub" x="0" y="42">바르셀로나 축제로 사뿐사뿐 첫걸음</text>
+                <text class="opening-star" x="-126" y="12" fill="#f5ba45" font-size="20">✦</text>
+                <text class="opening-star s2" x="128" y="15" fill="#f46f5f" font-size="17">♥</text>
+              </g>
+            </g>
+          </g>
+
+          <g id="travelerWrapper" transform="translate(625 240)" aria-label="함께 걷는 민주와 윤하">
             <g transform="translate(-61 -104)">
               <g class="duo-bob">
               <ellipse cx="61" cy="108" rx="58" ry="10" fill="rgba(43,75,70,.18)"/>
@@ -686,8 +717,8 @@
         </svg>
 
         <div class="status-bar">
-          <span class="status-emoji" id="statusEmoji">🔥</span>
-          <span class="status-copy"><strong id="statusTitle">라 메르세 축제 속으로!</strong><span id="statusDetail" aria-live="polite">9/26–27 · 민주와 윤하의 여행이 시작돼요</span></span>
+          <span class="status-emoji" id="statusEmoji">🎒</span>
+          <span class="status-copy"><strong id="statusTitle">민주·윤하, 둘이 여행 시작!</strong><span id="statusDetail" aria-live="polite">바르셀로나 축제로 첫걸음을 옮겨요</span></span>
           <span class="mini-progress" aria-hidden="true"><span id="progressFill"></span></span>
         </div>
       </div>
@@ -748,6 +779,7 @@
     const replayButton = document.querySelector('#replayAnimation');
     const mapCard = document.querySelector('#mapCard');
     const routeStops = [...document.querySelectorAll('.route-stop')];
+    const openingScene = document.querySelector('#openingScene');
     const barcelonaFestival = document.querySelector('#festivalBarcelona');
     const madridFestival = document.querySelector('#festivalMadrid');
     const madridHome = document.querySelector('#madridHome');
@@ -755,6 +787,7 @@
     const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     const phases = [
+      { type: 'opening', duration: 4000, completed: 0 },
       { type: 'stop', city: 0, duration: 5200, completed: 0, emoji: '💃', title: '라 메르세 거리에서 춤을!', detail: '9/26–27 · 민주와 윤하가 행진단과 함께 춤춰요', festival: 'barcelona' },
       { type: 'move', segment: 0, duration: 6000, completed: 0 },
       { type: 'stop', city: 1, duration: 3600, completed: 1, emoji: '🏠', title: '마드리드, 윤하네 집 도착!', detail: '9/28 · 윤하의 Madrid home에서 포근하게 쉬어요', home: true },
@@ -771,12 +804,12 @@
       phaseStarts.push(totalDuration);
       totalDuration += phase.duration;
     });
-    const stepTimes = [phaseStarts[0], phaseStarts[2], phaseStarts[4], phaseStarts[6], phaseStarts[8]];
+    const stepTimes = [phaseStarts[1], phaseStarts[3], phaseStarts[5], phaseStarts[7], phaseStarts[9]];
     let origin = performance.now();
     let elapsed = 0;
     let paused = reducedMotion;
     let frame = null;
-    let reducedStep = 0;
+    let reducedStep = -1;
 
     const ease = value => value;
 
@@ -795,6 +828,13 @@
     function placeAtCity(cityIndex) {
       if (cityIndex === 0) placeTraveler(0, 0);
       else placeTraveler(cityIndex - 1, 1);
+    }
+
+    function placeOpeningTraveler(progress) {
+      const smoothProgress = progress * progress * (3 - 2 * progress);
+      const x = 790 + (625 - 790) * smoothProgress;
+      const y = 258 + (240 - 258) * smoothProgress;
+      traveler.setAttribute('transform', `translate(${x} ${y})`);
     }
 
     function getPhaseAt(time) {
@@ -816,16 +856,24 @@
       paths.forEach((path, index) => {
         if (index < phase.completed) path.classList.add('completed');
       });
+      openingScene.classList.toggle('active', phase.type === 'opening');
       barcelonaFestival.classList.toggle('active', phase.festival === 'barcelona');
       madridFestival.classList.toggle('active', phase.festival === 'madrid');
       madridHome.classList.toggle('active', phase.home === true);
       mallorcaHoliday.classList.toggle('active', phase.holiday === true);
-      traveler.classList.toggle('walking', phase.type === 'move');
+      traveler.classList.toggle('walking', phase.type === 'move' || phase.type === 'opening');
       traveler.classList.toggle('swimming', phase.holiday === true);
       traveler.classList.toggle('parading', Boolean(phase.festival));
       traveler.classList.toggle('celebrating', phase.type === 'stop' && Boolean(phase.festival));
 
-      if (phase.type === 'move') {
+      if (phase.type === 'opening') {
+        const openingProgress = Math.min(1, localTime / phase.duration);
+        placeOpeningTraveler(openingProgress);
+        setActiveCity(0);
+        statusEmoji.textContent = '🎒';
+        statusTitle.textContent = '민주·윤하, 둘이 여행 시작!';
+        statusDetail.textContent = '바르셀로나 축제로 사뿐사뿐 첫걸음을 옮겨요';
+      } else if (phase.type === 'move') {
         const segmentProgress = Math.min(1, localTime / phase.duration);
         const segment = segments[phase.segment];
         placeTraveler(phase.segment, segmentProgress);
@@ -879,7 +927,7 @@
     function replay() {
       elapsed = 0;
       origin = performance.now();
-      reducedStep = 0;
+      reducedStep = -1;
       render(0);
       if (!reducedMotion) {
         paused = false;
