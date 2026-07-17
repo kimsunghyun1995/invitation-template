@@ -128,18 +128,132 @@
     .city .date { fill: var(--blue); font-size: 17px; font-weight: 900; }
     @keyframes city-pulse { to { r: 11; } }
 
-    .opening-scene { opacity: 0; pointer-events: none; transition: opacity .4s ease; }
-    .opening-scene.active { opacity: 1; }
-    .opening-kicker { fill: #c84f43; font-size: 13px; font-weight: 950; letter-spacing: .16em; text-anchor: middle; }
-    .opening-title { fill: #283d3b; font-size: 31px; font-weight: 950; text-anchor: middle; paint-order: stroke; stroke: #fffdf6; stroke-width: 7; }
-    .opening-sub { fill: #367e9b; font-size: 13px; font-weight: 900; text-anchor: middle; }
-    .opening-scene.active .opening-content { transform-box: fill-box; transform-origin: center; animation: opening-pop .72s cubic-bezier(.2,.9,.3,1) both; }
-    .opening-scene.active .opening-star { transform-box: fill-box; transform-origin: center; animation: opening-twinkle .72s ease-in-out infinite alternate; }
-    .opening-scene.active .opening-star.s2 { animation-delay: -.3s; }
-    .opening-scene.active .opening-trail { stroke-dasharray: 5 10; animation: opening-trail 1.2s linear infinite; }
-    @keyframes opening-pop { from { opacity: 0; transform: translateY(10px) scale(.9); } }
-    @keyframes opening-twinkle { to { opacity: .4; transform: scale(.75) rotate(12deg); } }
-    @keyframes opening-trail { to { stroke-dashoffset: -30; } }
+    body.opening-active { overflow: hidden; }
+    .cinematic-opening {
+      position: fixed;
+      z-index: 100;
+      inset: 0;
+      overflow: hidden;
+      visibility: hidden;
+      opacity: 0;
+      pointer-events: none;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 18% 18%, rgba(255,255,255,.9) 0 4%, transparent 4.2%),
+        radial-gradient(circle at 85% 28%, rgba(255,255,255,.68) 0 6%, transparent 6.2%),
+        linear-gradient(180deg, #bfe9e5 0%, #e7f3d8 58%, #fff0c8 100%);
+      transition: opacity .45s ease, visibility .45s ease;
+    }
+    .cinematic-opening::before,
+    .cinematic-opening::after {
+      content: "";
+      position: absolute;
+      width: 34vw;
+      height: 11vw;
+      min-width: 280px;
+      min-height: 90px;
+      border-radius: 50%;
+      background: rgba(255,255,255,.42);
+      filter: blur(2px);
+    }
+    .cinematic-opening::before { top: 10%; left: -8%; transform: rotate(-5deg); }
+    .cinematic-opening::after { right: -9%; bottom: 13%; transform: rotate(7deg); }
+    .cinematic-opening.active { visibility: visible; opacity: 1; pointer-events: auto; }
+    .cinematic-opening.active.finishing { opacity: 0; }
+    .cinematic-skip {
+      position: absolute;
+      z-index: 5;
+      top: max(20px, env(safe-area-inset-top));
+      right: max(20px, env(safe-area-inset-right));
+      min-height: 42px;
+      padding: 9px 16px;
+      border: 1px solid rgba(40,61,59,.15);
+      border-radius: 999px;
+      background: rgba(255,253,246,.76);
+      color: var(--ink);
+      font-size: .78rem;
+      font-weight: 900;
+      cursor: pointer;
+      backdrop-filter: blur(10px);
+    }
+    .cinematic-stage {
+      position: absolute;
+      z-index: 2;
+      inset: 0;
+      display: grid;
+      grid-template-rows: auto minmax(0,1fr);
+      place-items: center;
+      gap: clamp(12px, 2vh, 24px);
+      padding: clamp(72px, 10vh, 112px) 18px clamp(24px, 6vh, 58px);
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(12px) scale(.985);
+      transition: opacity .42s ease, transform .42s ease, visibility .42s ease;
+    }
+    .cinematic-opening.active[data-scene="walk"] .scene-walk,
+    .cinematic-opening.active[data-scene="flight"] .scene-flight,
+    .cinematic-opening.active[data-scene="reunion"] .scene-reunion {
+      opacity: 1;
+      visibility: visible;
+      transform: none;
+    }
+    .cinematic-copy { position: relative; z-index: 2; text-align: center; }
+    .cinematic-kicker { margin: 0 0 8px; color: var(--coral-dark); font-size: clamp(.72rem, 1.4vw, .92rem); font-weight: 950; letter-spacing: .18em; text-transform: uppercase; }
+    .cinematic-title { margin: 0; font-family: "Arial Rounded MT Bold", "Apple SD Gothic Neo", sans-serif; font-size: clamp(2.7rem, 7vw, 6.4rem); line-height: .98; letter-spacing: -.065em; }
+    .cinematic-title span { color: var(--coral); text-shadow: 3px 4px 0 rgba(255,255,255,.72); }
+    .cinematic-subtitle { margin: 14px 0 0; color: #527371; font-size: clamp(.9rem, 1.7vw, 1.2rem); font-weight: 850; }
+    .cinematic-visual { position: relative; width: min(920px, 96vw); height: min(47vh, 430px); min-height: 270px; }
+    .cinematic-character-svg { display: block; width: 100%; height: 100%; overflow: visible; }
+    .cinematic-ground { stroke: rgba(40,61,59,.18); stroke-width: 7; stroke-linecap: round; stroke-dasharray: 10 16; }
+    .cinematic-arm, .cinematic-leg { transform-box: fill-box; transform-origin: center top; }
+    .cinematic-opening[data-scene="walk"] .cinematic-arm,
+    .cinematic-opening[data-scene="walk"] .cinematic-leg { animation: cinematic-step .48s ease-in-out infinite alternate; }
+    .cinematic-opening[data-scene="walk"] .cinematic-arm.alt,
+    .cinematic-opening[data-scene="walk"] .cinematic-leg.alt { animation-direction: alternate-reverse; }
+    .cinematic-opening[data-scene="walk"] .cinematic-walk-track { animation: cinematic-travel 3.2s linear both; }
+    .cinematic-opening[data-scene="walk"] .cinematic-pair { transform-box: fill-box; transform-origin: center bottom; animation: cinematic-bob .48s ease-in-out infinite alternate; }
+    .flight-route {
+      position: absolute;
+      top: 16%;
+      left: 6%;
+      right: 6%;
+      height: 42%;
+      border-top: 5px dashed rgba(255,253,246,.88);
+      border-radius: 50%;
+    }
+    .flight-label { position: absolute; top: -38px; padding: 7px 12px; border-radius: 999px; background: rgba(255,253,246,.78); font-size: clamp(.68rem, 1.5vw, .86rem); font-weight: 950; letter-spacing: .08em; }
+    .flight-label.seoul { left: 0; }
+    .flight-label.barcelona { right: 0; color: var(--coral-dark); }
+    .cinematic-plane {
+      position: absolute;
+      z-index: 3;
+      top: -57px;
+      left: 0;
+      display: grid;
+      justify-items: center;
+      color: var(--coral-dark);
+      transform: translateX(-12vw) rotate(4deg);
+      animation: cinematic-flight 2.8s cubic-bezier(.35,.05,.2,1) both;
+    }
+    .cinematic-plane span { font-size: clamp(4.2rem, 10vw, 7.8rem); line-height: 1; text-shadow: 0 9px 0 rgba(40,61,59,.10); }
+    .cinematic-plane b { margin-top: -7px; padding: 5px 12px; border-radius: 999px; background: #fff0ed; font-size: .78rem; }
+    .flight-waiting { position: absolute; right: 7%; bottom: 0; width: min(250px, 34vw); height: 72%; }
+    .flight-waiting-sign { position: absolute; right: 3%; bottom: 6%; padding: 10px 15px; border-radius: 16px 16px 16px 5px; background: rgba(255,253,246,.9); color: var(--coral-dark); font-size: clamp(.65rem, 1.3vw, .82rem); font-weight: 950; text-align: center; }
+    .cinematic-opening[data-scene="flight"] .waiting-yunha { transform-box: fill-box; transform-origin: center bottom; animation: waiting-bounce .8s ease-in-out infinite alternate; }
+    .cinematic-opening[data-scene="flight"] .waiting-wave { transform-box: fill-box; transform-origin: center top; animation: waiting-wave .55s ease-in-out infinite alternate; }
+    .reunion-card { position: absolute; left: 50%; bottom: 4%; width: min(700px, 92vw); height: 92%; transform: translateX(-50%); }
+    .cinematic-opening[data-scene="reunion"] .reunion-minju { animation: reunion-arrive .85s cubic-bezier(.2,.9,.3,1) both; }
+    .cinematic-opening[data-scene="reunion"] .reunion-yunha { transform-box: fill-box; transform-origin: center bottom; animation: waiting-bounce .72s ease-in-out infinite alternate; }
+    .cinematic-opening[data-scene="reunion"] .reunion-heart { transform-box: fill-box; transform-origin: center; animation: reunion-heart .72s ease-in-out infinite alternate; }
+    .barcelona-sign { fill: #fffdf6; stroke: rgba(40,61,59,.22); stroke-width: 3; }
+    @keyframes cinematic-step { from { transform: rotate(-18deg); } to { transform: rotate(18deg); } }
+    @keyframes cinematic-travel { from { transform: translateX(-90px); } to { transform: translateX(90px); } }
+    @keyframes cinematic-bob { to { transform: translateY(-3px); } }
+    @keyframes cinematic-flight { from { transform: translateX(-12vw) translateY(25px) rotate(-5deg); } to { transform: translateX(min(72vw, 720px)) translateY(-20px) rotate(5deg); } }
+    @keyframes waiting-bounce { to { transform: translateY(-5px); } }
+    @keyframes waiting-wave { to { transform: rotate(-28deg); } }
+    @keyframes reunion-arrive { from { opacity: 0; transform: translateX(-130px); } }
+    @keyframes reunion-heart { to { transform: translateY(-8px) scale(1.15) rotate(6deg); } }
 
     .festival-scene { opacity: 0; pointer-events: none; transition: opacity .45s ease; }
     .festival-scene.active { opacity: 1; }
@@ -203,6 +317,7 @@
     @keyframes splash-flow { to { stroke-dashoffset: -26; } }
 
     #travelerWrapper { transition: opacity .28s ease; }
+    #travelerWrapper.opening-hidden,
     #travelerWrapper.swimming,
     #travelerWrapper.parading { opacity: 0; filter: none; }
     .duo-bob { transform-box: fill-box; transform-origin: center bottom; }
@@ -216,7 +331,6 @@
     #travelerWrapper.walking .walking-arm { animation: gentle-arm .413s ease-in-out infinite alternate; }
     #travelerWrapper.walking .walking-arm.alt { animation-direction: alternate-reverse; }
     .map-card.paused .walking-arm { animation-play-state: paused; }
-    .map-card.paused .opening-scene.active *,
     .map-card.paused .festival-scene.active *,
     .map-card.paused #travelerWrapper * { animation-play-state: paused !important; }
     #travelerWrapper.walking .travel-bag { animation: bag-roll .413s ease-in-out infinite alternate; }
@@ -313,6 +427,16 @@
     .festival-card.madrid a { color: var(--blue); }
 
     @media (max-width: 700px) {
+      .cinematic-skip { top: max(12px, env(safe-area-inset-top)); right: max(12px, env(safe-area-inset-right)); }
+      .cinematic-stage { padding: 70px 10px 22px; }
+      .cinematic-title { font-size: clamp(2.3rem, 11.5vw, 3.4rem); }
+      .cinematic-subtitle { margin-top: 9px; font-size: .85rem; }
+      .cinematic-visual { width: 100vw; height: min(50vh, 380px); min-height: 245px; }
+      .scene-walk .cinematic-character-svg { position: absolute; left: 50%; width: 190vw; max-width: none; transform: translateX(-50%); }
+      .flight-route { left: 2%; right: 2%; }
+      .flight-waiting { right: -2%; width: 42vw; }
+      .flight-waiting-sign { right: 1%; bottom: 1%; padding: 8px 10px; }
+      .reunion-card { width: 125vw; max-width: none; }
       .page { width: min(100% - 18px, 1160px); padding-top: 17px; }
       .hero { padding-bottom: 18px; }
       .map-card { border-radius: 24px 24px 24px 8px; }
@@ -341,7 +465,112 @@
     }
   </style>
 </head>
-<body>
+<body class="opening-active">
+  <section class="cinematic-opening active" id="cinematicOpening" data-scene="walk" role="dialog" aria-modal="true" aria-label="민주와 윤하의 여행 시작 오프닝">
+    <button class="cinematic-skip" id="skipOpening" type="button">축제로 바로가기 →</button>
+
+    <svg width="0" height="0" aria-hidden="true" style="position:absolute">
+      <defs>
+        <symbol id="openingMinju" viewBox="0 0 100 160">
+          <ellipse cx="50" cy="151" rx="37" ry="7" fill="rgba(40,61,59,.16)"/>
+          <rect x="27" y="1" width="46" height="20" rx="10" fill="#fff0ed" stroke="#f46f5f" stroke-width="2"/>
+          <text x="50" y="15" text-anchor="middle" fill="#283d3b" font-size="11" font-weight="950">민주</text>
+          <ellipse cx="50" cy="58" rx="30" ry="32" fill="#5b3d33"/>
+          <circle cx="50" cy="56" r="23" fill="#ffd2b8"/>
+          <path d="M27 55q2-29 24-29 23 0 25 30-12-4-19-17-11 13-30 16Z" fill="#5b3d33"/>
+          <path d="M36 30q13-15 27 0" fill="none" stroke="#f46f5f" stroke-width="8" stroke-linecap="round"/>
+          <path d="m35 30-12-8 3 17Zm29 0 12-9-2 18Z" fill="#f46f5f"/>
+          <path d="M39 57q4 4 8 0m7 0q4 4 8 0" fill="none" stroke="#283d3b" stroke-width="3" stroke-linecap="round"/>
+          <circle cx="35" cy="68" r="4" fill="#f7a7a1"/><circle cx="65" cy="68" r="4" fill="#f7a7a1"/>
+          <path d="M44 70q6 7 12 0" fill="none" stroke="#c45b61" stroke-width="3" stroke-linecap="round"/>
+          <path d="M31 87q19-14 38 0l7 38H24Z" fill="#73b3c7" stroke="#283d3b" stroke-width="3" stroke-linejoin="round"/>
+          <path class="cinematic-arm alt" d="M32 90Q17 99 15 112" fill="none" stroke="#ffd2b8" stroke-width="8" stroke-linecap="round"/>
+          <path class="cinematic-arm" d="M68 90q13 9 17 20" fill="none" stroke="#ffd2b8" stroke-width="8" stroke-linecap="round"/>
+          <g class="cinematic-leg"><path d="M39 123v24" stroke="#283d3b" stroke-width="8" stroke-linecap="round"/><path d="M33 148h13" stroke="#f46f5f" stroke-width="8" stroke-linecap="round"/></g>
+          <g class="cinematic-leg alt"><path d="M61 123v24" stroke="#283d3b" stroke-width="8" stroke-linecap="round"/><path d="M55 148h13" stroke="#f46f5f" stroke-width="8" stroke-linecap="round"/></g>
+          <rect x="38" y="98" width="25" height="19" rx="5" fill="#283d3b"/><circle cx="50" cy="107" r="5" fill="#ffd96c"/>
+        </symbol>
+
+        <symbol id="openingYunha" viewBox="0 0 100 160">
+          <ellipse cx="50" cy="151" rx="37" ry="7" fill="rgba(40,61,59,.16)"/>
+          <rect x="27" y="1" width="46" height="20" rx="10" fill="#fff7d8" stroke="#e3a72d" stroke-width="2"/>
+          <text x="50" y="15" text-anchor="middle" fill="#283d3b" font-size="11" font-weight="950">윤하</text>
+          <path d="M20 61q0-39 30-39t30 39v41H20Z" fill="#342f33"/>
+          <circle cx="50" cy="56" r="23" fill="#f6c8a8"/>
+          <path d="M27 54q1-29 23-29 24 0 26 30-12-4-19-18-9 12-30 17Z" fill="#342f33"/>
+          <path d="M29 34q22-13 43 0" fill="none" stroke="#f5ba45" stroke-width="7" stroke-linecap="round"/>
+          <circle cx="73" cy="31" r="7" fill="#ffd96c"/><circle cx="79" cy="25" r="5" fill="#f46f5f"/>
+          <path d="M39 57q4 4 8 0m7 0q4 4 8 0" fill="none" stroke="#283d3b" stroke-width="3" stroke-linecap="round"/>
+          <circle cx="35" cy="68" r="4" fill="#f7a7a1"/><circle cx="65" cy="68" r="4" fill="#f7a7a1"/>
+          <path d="M44 70q6 7 12 0" fill="none" stroke="#c45b61" stroke-width="3" stroke-linecap="round"/>
+          <path d="M31 87q19-14 38 0l7 38H24Z" fill="#f7c85c" stroke="#283d3b" stroke-width="3" stroke-linejoin="round"/>
+          <path class="cinematic-arm alt" d="M32 90Q17 99 15 112" fill="none" stroke="#f6c8a8" stroke-width="8" stroke-linecap="round"/>
+          <path class="cinematic-arm waiting-wave" d="M68 90q13 9 17 20" fill="none" stroke="#f6c8a8" stroke-width="8" stroke-linecap="round"/>
+          <g class="cinematic-leg alt"><path d="M39 123v24" stroke="#283d3b" stroke-width="8" stroke-linecap="round"/><path d="M33 148h13" stroke="#367e9b" stroke-width="8" stroke-linecap="round"/></g>
+          <g class="cinematic-leg"><path d="M61 123v24" stroke="#283d3b" stroke-width="8" stroke-linecap="round"/><path d="M55 148h13" stroke="#367e9b" stroke-width="8" stroke-linecap="round"/></g>
+          <g transform="translate(75 112)"><rect width="22" height="32" rx="6" fill="#f46f5f" stroke="#fffdf6" stroke-width="3"/><path d="M7 0v-10h9V0" fill="none" stroke="#283d3b" stroke-width="4"/><circle cx="6" cy="35" r="3" fill="#283d3b"/><circle cx="17" cy="35" r="3" fill="#283d3b"/></g>
+        </symbol>
+      </defs>
+    </svg>
+
+    <div class="cinematic-stage scene-walk">
+      <div class="cinematic-copy">
+        <p class="cinematic-kicker">Minju × Yunha · Spain 2026</p>
+        <h2 class="cinematic-title">둘이서 <span>여행 시작!</span></h2>
+        <p class="cinematic-subtitle">설레는 첫걸음부터 나란히</p>
+      </div>
+      <div class="cinematic-visual">
+        <svg class="cinematic-character-svg" viewBox="0 0 900 360" role="img" aria-label="민주와 윤하가 함께 걷는 장면">
+          <path class="cinematic-ground" d="M100 310H800" fill="none"/>
+          <g class="cinematic-walk-track">
+            <g class="cinematic-pair">
+              <g transform="translate(270 65) scale(1.4)"><use href="#openingMinju" width="100" height="160"/></g>
+              <g transform="translate(440 65) scale(1.4)"><use href="#openingYunha" width="100" height="160"/></g>
+            </g>
+          </g>
+        </svg>
+      </div>
+    </div>
+
+    <div class="cinematic-stage scene-flight">
+      <div class="cinematic-copy">
+        <p class="cinematic-kicker">Seoul → Barcelona</p>
+        <h2 class="cinematic-title">민주, <span>바르셀로나로!</span></h2>
+        <p class="cinematic-subtitle">먼저 도착한 윤하에게 날아가는 중</p>
+      </div>
+      <div class="cinematic-visual">
+        <div class="flight-route" aria-hidden="true">
+          <span class="flight-label seoul">SEOUL</span>
+          <span class="flight-label barcelona">BARCELONA</span>
+          <span class="cinematic-plane"><span>✈</span><b>민주 탑승</b></span>
+        </div>
+        <svg class="flight-waiting" viewBox="0 0 220 300" role="img" aria-label="바르셀로나에서 기다리는 윤하">
+          <g transform="translate(55 72) scale(1.2)"><g class="waiting-yunha"><use href="#openingYunha" width="100" height="160"/></g></g>
+        </svg>
+        <div class="flight-waiting-sign">윤하<br>먼저 와서 기다리는 중 ♡</div>
+      </div>
+    </div>
+
+    <div class="cinematic-stage scene-reunion">
+      <div class="cinematic-copy">
+        <p class="cinematic-kicker">Hola, Barcelona!</p>
+        <h2 class="cinematic-title">드디어 <span>바르셀로나 도착!</span></h2>
+        <p class="cinematic-subtitle">먼저 와 있던 윤하가 민주를 맞이해요</p>
+      </div>
+      <div class="cinematic-visual">
+        <svg class="reunion-card" viewBox="0 0 700 360" role="img" aria-label="바르셀로나에서 재회한 민주와 윤하">
+          <rect class="barcelona-sign" x="228" y="17" width="244" height="55" rx="27"/>
+          <text x="350" y="52" text-anchor="middle" fill="#c84f43" font-size="21" font-weight="950">BARCELONA · BCN</text>
+          <path class="cinematic-ground" d="M80 323H620" fill="none"/>
+          <g transform="translate(205 91) scale(1.35)"><g class="reunion-minju"><use href="#openingMinju" width="100" height="160"/></g></g>
+          <g transform="translate(365 91) scale(1.35)"><g class="reunion-yunha"><use href="#openingYunha" width="100" height="160"/></g></g>
+          <text class="reunion-heart" x="350" y="155" text-anchor="middle" fill="#f46f5f" font-size="48">♥</text>
+          <text x="350" y="350" text-anchor="middle" fill="#283d3b" font-size="19" font-weight="950">“민주야, 기다렸어!”</text>
+        </svg>
+      </div>
+    </div>
+  </section>
+
   <main class="page">
     <header class="hero">
       <p class="eyebrow">Two girls, one Spain trip</p>
@@ -623,23 +852,6 @@
             <text x="0" y="121" text-anchor="middle" class="festival-sub">바다 수영 · 야자수 · 느긋한 4박</text>
           </g>
 
-          <!-- 첫 재생 오프닝: 민주와 윤하가 바르셀로나로 걸어오며 여행을 시작 -->
-          <g id="openingScene" class="opening-scene active" aria-label="민주와 윤하 둘이 여행 시작 오프닝">
-            <path class="opening-trail" d="M790 258Q710 213 625 240" fill="none" stroke="rgba(255,253,246,.92)" stroke-width="6" stroke-linecap="round"/>
-            <g transform="translate(500 122)">
-              <g class="opening-content">
-                <rect x="-196" y="-63" width="392" height="126" rx="30" fill="#fffdf6" stroke="rgba(40,61,59,.18)" stroke-width="2.5"/>
-                <circle cx="-161" cy="-30" r="19" fill="#fff0ed"/><text x="-161" y="-23" text-anchor="middle" font-size="22">🎒</text>
-                <circle cx="161" cy="-30" r="19" fill="#fff7d8"/><text x="161" y="-23" text-anchor="middle" font-size="22">✈</text>
-                <text class="opening-kicker" x="0" y="-31">MINJU × YUNHA</text>
-                <text class="opening-title" x="0" y="11">둘이 여행 시작!</text>
-                <text class="opening-sub" x="0" y="42">바르셀로나 축제로 사뿐사뿐 첫걸음</text>
-                <text class="opening-star" x="-126" y="12" fill="#f5ba45" font-size="20">✦</text>
-                <text class="opening-star s2" x="128" y="15" fill="#f46f5f" font-size="17">♥</text>
-              </g>
-            </g>
-          </g>
-
           <g id="travelerWrapper" transform="translate(625 240)" aria-label="함께 걷는 민주와 윤하">
             <g transform="translate(-61 -104)">
               <g class="duo-bob">
@@ -779,7 +991,8 @@
     const replayButton = document.querySelector('#replayAnimation');
     const mapCard = document.querySelector('#mapCard');
     const routeStops = [...document.querySelectorAll('.route-stop')];
-    const openingScene = document.querySelector('#openingScene');
+    const cinematicOpening = document.querySelector('#cinematicOpening');
+    const skipOpening = document.querySelector('#skipOpening');
     const barcelonaFestival = document.querySelector('#festivalBarcelona');
     const madridFestival = document.querySelector('#festivalMadrid');
     const madridHome = document.querySelector('#madridHome');
@@ -787,7 +1000,7 @@
     const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     const phases = [
-      { type: 'opening', duration: 4000, completed: 0 },
+      { type: 'opening', duration: 9000, completed: 0 },
       { type: 'stop', city: 0, duration: 5200, completed: 0, emoji: '💃', title: '라 메르세 거리에서 춤을!', detail: '9/26–27 · 민주와 윤하가 행진단과 함께 춤춰요', festival: 'barcelona' },
       { type: 'move', segment: 0, duration: 6000, completed: 0 },
       { type: 'stop', city: 1, duration: 3600, completed: 1, emoji: '🏠', title: '마드리드, 윤하네 집 도착!', detail: '9/28 · 윤하의 Madrid home에서 포근하게 쉬어요', home: true },
@@ -830,13 +1043,6 @@
       else placeTraveler(cityIndex - 1, 1);
     }
 
-    function placeOpeningTraveler(progress) {
-      const smoothProgress = progress * progress * (3 - 2 * progress);
-      const x = 790 + (625 - 790) * smoothProgress;
-      const y = 258 + (240 - 258) * smoothProgress;
-      traveler.setAttribute('transform', `translate(${x} ${y})`);
-    }
-
     function getPhaseAt(time) {
       let phaseIndex = phases.length - 1;
       for (let index = 0; index < phases.length; index += 1) {
@@ -856,23 +1062,29 @@
       paths.forEach((path, index) => {
         if (index < phase.completed) path.classList.add('completed');
       });
-      openingScene.classList.toggle('active', phase.type === 'opening');
+      const isOpening = phase.type === 'opening';
+      const openingSceneName = localTime < 3300 ? 'walk' : localTime < 6200 ? 'flight' : 'reunion';
+      if (isOpening) cinematicOpening.dataset.scene = openingSceneName;
+      cinematicOpening.classList.toggle('active', isOpening);
+      cinematicOpening.classList.toggle('finishing', isOpening && localTime >= 8500);
+      cinematicOpening.setAttribute('aria-hidden', String(!isOpening));
+      document.body.classList.toggle('opening-active', isOpening);
       barcelonaFestival.classList.toggle('active', phase.festival === 'barcelona');
       madridFestival.classList.toggle('active', phase.festival === 'madrid');
       madridHome.classList.toggle('active', phase.home === true);
       mallorcaHoliday.classList.toggle('active', phase.holiday === true);
-      traveler.classList.toggle('walking', phase.type === 'move' || phase.type === 'opening');
+      traveler.classList.toggle('opening-hidden', isOpening);
+      traveler.classList.toggle('walking', phase.type === 'move');
       traveler.classList.toggle('swimming', phase.holiday === true);
       traveler.classList.toggle('parading', Boolean(phase.festival));
       traveler.classList.toggle('celebrating', phase.type === 'stop' && Boolean(phase.festival));
 
       if (phase.type === 'opening') {
-        const openingProgress = Math.min(1, localTime / phase.duration);
-        placeOpeningTraveler(openingProgress);
+        placeAtCity(0);
         setActiveCity(0);
-        statusEmoji.textContent = '🎒';
-        statusTitle.textContent = '민주·윤하, 둘이 여행 시작!';
-        statusDetail.textContent = '바르셀로나 축제로 사뿐사뿐 첫걸음을 옮겨요';
+        statusEmoji.textContent = openingSceneName === 'walk' ? '👣' : openingSceneName === 'flight' ? '✈️' : '💛';
+        statusTitle.textContent = openingSceneName === 'walk' ? '민주·윤하, 둘이 여행 시작!' : openingSceneName === 'flight' ? '민주, 바르셀로나로 비행 중!' : '바르셀로나에서 드디어 재회!';
+        statusDetail.textContent = '오프닝이 끝나면 라 메르세 축제가 시작돼요';
       } else if (phase.type === 'move') {
         const segmentProgress = Math.min(1, localTime / phase.duration);
         const segment = segments[phase.segment];
@@ -937,8 +1149,26 @@
       updatePausedUI();
     }
 
+    function finishOpening() {
+      elapsed = stepTimes[0];
+      render(elapsed);
+      if (reducedMotion) {
+        reducedStep = 0;
+      } else {
+        paused = false;
+        if (frame) cancelAnimationFrame(frame);
+        origin = performance.now() - elapsed;
+        frame = requestAnimationFrame(tick);
+      }
+      updatePausedUI();
+    }
+
     toggleButton.addEventListener('click', toggleAnimation);
     replayButton.addEventListener('click', replay);
+    skipOpening.addEventListener('click', finishOpening);
+    document.addEventListener('keydown', event => {
+      if (event.key === 'Escape' && cinematicOpening.classList.contains('active')) finishOpening();
+    });
     routeStops.forEach((stop, index) => {
       stop.addEventListener('click', () => {
         elapsed = stepTimes[index];
