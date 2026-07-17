@@ -1,713 +1,878 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>나는 솔로 시청 파티 초대장</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="민주와 윤하가 함께 떠나는 10박 스페인 여행 애니메이션 지도">
+  <title>우리 둘의 스페인 대모험</title>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700;900&display=swap');
-
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
+    :root {
+      --ink: #283d3b;
+      --muted: #617875;
+      --cream: #fff8e8;
+      --paper: #fffdf6;
+      --sea: #bce6e2;
+      --sea-deep: #83c9c8;
+      --land: #f6d98b;
+      --coral: #f46f5f;
+      --coral-dark: #c84f43;
+      --blue: #367e9b;
+      --sun: #f5ba45;
+      --green: #6d9c78;
+      --shadow: 0 24px 70px rgba(42, 86, 82, .18);
     }
 
+    * { box-sizing: border-box; }
+    html { color-scheme: light; }
     body {
-      font-family: 'Noto Sans KR', sans-serif;
       min-height: 100vh;
-      overflow-x: hidden;
-      background: linear-gradient(180deg, #4a3a8a 0%, #7b5ea7 30%, #c78db5 60%, #9a7cc5 100%);
-      color: #fff;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      position: relative;
+      margin: 0;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 8% 10%, rgba(245,186,69,.30), transparent 24rem),
+        radial-gradient(circle at 92% 82%, rgba(54,126,155,.16), transparent 28rem),
+        #f8efd9;
+      font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Pretendard", "Noto Sans KR", sans-serif;
     }
-
-    /* Floating emoji container */
-    .floating-emojis {
+    body::after {
+      content: "";
       position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
+      inset: 0;
       pointer-events: none;
-      z-index: 0;
-      overflow: hidden;
+      z-index: 20;
+      opacity: .22;
+      mix-blend-mode: multiply;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 140 140' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence baseFrequency='.75' numOctaves='3' type='fractalNoise'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.13'/%3E%3C/svg%3E");
     }
+    button { font: inherit; }
+    .page { width: min(1160px, calc(100% - 28px)); margin: 0 auto; padding: 30px 0 48px; }
 
-    .emoji {
-      position: absolute;
-      font-size: 28px;
-      animation: floatEmoji 8s ease-in-out infinite;
-      opacity: 0.85;
-      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
-    }
-
-    @keyframes floatEmoji {
-      0%, 100% { transform: translateY(0) rotate(0deg) scale(1); }
-      25% { transform: translateY(-20px) rotate(10deg) scale(1.05); }
-      50% { transform: translateY(-35px) rotate(-5deg) scale(1.1); }
-      75% { transform: translateY(-15px) rotate(8deg) scale(1.02); }
-    }
-
-    /* Badge top-right */
-    .badge {
-      position: absolute;
-      top: 24px;
-      right: 24px;
-      background: rgba(255,255,255,0.15);
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(255,255,255,0.3);
-      border-radius: 8px;
-      padding: 10px 20px;
-      font-size: 14px;
-      font-weight: 700;
-      z-index: 10;
-      animation: fadeSlideIn 1s ease-out 0.3s both;
-    }
-
-    /* Main content */
-    .main-content {
-      position: relative;
-      z-index: 5;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 80px 20px 40px;
-      max-width: 800px;
-      width: 100%;
-    }
-
-    .title {
-      font-size: clamp(64px, 12vw, 120px);
-      font-weight: 900;
-      line-height: 1.1;
-      text-align: center;
-      text-shadow: 0 4px 20px rgba(0,0,0,0.3);
-      animation: titlePop 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) both;
-      margin-bottom: 20px;
-    }
-
-    .title span {
-      display: inline-block;
-    }
-
-    @keyframes titlePop {
-      0% { transform: scale(0.5); opacity: 0; }
-      100% { transform: scale(1); opacity: 1; }
-    }
-
-    .subtitle {
-      font-size: clamp(16px, 3vw, 22px);
-      font-weight: 400;
-      opacity: 0;
-      animation: fadeSlideIn 0.8s ease-out 0.5s both;
-      margin-bottom: 36px;
-      text-shadow: 0 2px 8px rgba(0,0,0,0.2);
-    }
-
-    @keyframes fadeSlideIn {
-      0% { transform: translateY(20px); opacity: 0; }
-      100% { transform: translateY(0); opacity: 1; }
-    }
-
-    /* Buttons */
-    .buttons {
-      display: flex;
-      gap: 16px;
-      margin-bottom: 36px;
-      flex-wrap: wrap;
-      justify-content: center;
-      opacity: 0;
-      animation: fadeSlideIn 0.8s ease-out 0.8s both;
-    }
-
-    .btn {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 14px 36px;
-      border-radius: 50px;
-      font-size: 18px;
-      font-weight: 700;
-      text-decoration: none;
-      cursor: pointer;
-      border: none;
-      transition: transform 0.2s, box-shadow 0.2s;
-    }
-
-    .btn:hover {
-      transform: translateY(-3px) scale(1.03);
-      box-shadow: 0 8px 25px rgba(0,0,0,0.25);
-    }
-
-    .btn:active {
-      transform: scale(0.97);
-    }
-
-    .btn-watch {
-      background: linear-gradient(135deg, #56d4c8 0%, #48c9b0 100%);
-      color: #fff;
-      box-shadow: 0 4px 15px rgba(72, 201, 176, 0.4);
-    }
-
-    /* Notification count */
-    .notification-count {
-      font-size: 13px;
-      color: rgba(255,255,255,0.75);
-      margin-bottom: 20px;
-      opacity: 0;
-      animation: fadeSlideIn 0.8s ease-out 1s both;
-    }
-
-    .notification-count span {
-      background: rgba(255,255,255,0.15);
-      padding: 4px 12px;
-      border-radius: 12px;
-    }
-
-    /* Info card */
-    .info-card {
-      background: linear-gradient(135deg, rgba(30, 20, 60, 0.85) 0%, rgba(50, 30, 80, 0.8) 100%);
-      backdrop-filter: blur(20px);
-      border: 1px solid rgba(168, 240, 230, 0.25);
-      border-radius: 20px;
-      padding: 30px 34px;
-      max-width: 500px;
-      width: 100%;
-      margin-bottom: 40px;
-      opacity: 0;
-      animation: fadeSlideIn 0.8s ease-out 1.2s both;
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255,255,255,0.1);
-    }
-
-    .info-card h3 {
-      font-size: 18px;
-      font-weight: 900;
-      margin-bottom: 18px;
-      background: linear-gradient(90deg, #ffd93d, #ff6bb5, #a8f0e6);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      text-align: center;
-      letter-spacing: 0.5px;
-    }
-
-    .info-card ul {
-      list-style: none;
-      padding: 0;
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-
-    .info-card ul li {
-      font-size: 15px;
-      padding: 8px 14px;
-      line-height: 1.6;
-      color: #e8e0f0;
-      background: rgba(255,255,255,0.06);
-      border-radius: 10px;
-      transition: background 0.2s, transform 0.2s;
-    }
-
-    .info-card ul li:hover {
-      background: rgba(255,255,255,0.12);
-      transform: translateX(4px);
-    }
-
-    .info-card ul li .li-emoji {
-      margin-right: 8px;
-      font-size: 17px;
-    }
-
-    .coupang-btn {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
-      border: none;
-      border-radius: 12px;
-      padding: 12px 20px;
-      margin-top: 18px;
-      font-size: 15px;
-      font-weight: 700;
-      color: #fff;
-      cursor: pointer;
-      transition: transform 0.2s, box-shadow 0.2s;
-      box-shadow: 0 4px 15px rgba(231, 76, 60, 0.4);
-      text-decoration: none;
-    }
-
-    .coupang-btn:hover {
-      transform: translateY(-2px) scale(1.02);
-      box-shadow: 0 6px 20px rgba(231, 76, 60, 0.5);
-    }
-
-    .coupang-btn .play-icon {
+    .hero { position: relative; text-align: center; padding: 8px 10px 25px; }
+    .eyebrow {
       display: inline-flex;
       align-items: center;
-      justify-content: center;
-      width: 24px;
-      height: 24px;
-      background: rgba(255,255,255,0.2);
-      border-radius: 50%;
-      font-size: 12px;
+      gap: 8px;
+      margin: 0 0 10px;
+      color: var(--coral-dark);
+      font-size: .78rem;
+      font-weight: 950;
+      letter-spacing: .14em;
+      text-transform: uppercase;
     }
+    .eyebrow::before, .eyebrow::after { content: "✦"; color: var(--sun); }
+    h1 {
+      margin: 0;
+      font-family: "Arial Rounded MT Bold", "Apple SD Gothic Neo", sans-serif;
+      font-size: clamp(2.5rem, 6vw, 5.2rem);
+      line-height: .98;
+      letter-spacing: -.07em;
+    }
+    h1 span { color: var(--coral); text-shadow: 2px 3px 0 rgba(255,255,255,.8); }
+    .subtitle { margin: 14px auto 0; color: var(--muted); font-size: clamp(.9rem, 1.5vw, 1.08rem); line-height: 1.6; }
 
-    /* Sponsors marquee */
-    .sponsors-wrapper {
-      width: 100%;
+    .map-card {
+      position: relative;
       overflow: hidden;
-      border-top: 1px solid rgba(255,255,255,0.15);
-      padding: 20px 0;
-      opacity: 0;
-      animation: fadeSlideIn 0.8s ease-out 1.5s both;
-      mask-image: linear-gradient(90deg, transparent 0%, #000 10%, #000 90%, transparent 100%);
-      -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 10%, #000 90%, transparent 100%);
+      border: 3px solid rgba(255,255,255,.88);
+      border-radius: 34px 34px 34px 10px;
+      background: var(--sea);
+      box-shadow: var(--shadow), 7px 8px 0 rgba(40,61,59,.08);
     }
-
-    .sponsors-track {
-      display: flex;
-      align-items: center;
-      gap: 32px;
-      white-space: nowrap;
-      animation: marqueeScroll 12s linear infinite;
-      width: max-content;
-    }
-
-    .sponsor {
-      font-size: 15px;
-      font-weight: 700;
-      opacity: 0.85;
-      letter-spacing: 1px;
-      white-space: nowrap;
-      flex-shrink: 0;
-    }
-
-    .sponsor-divider {
-      color: rgba(255,255,255,0.3);
-      font-size: 10px;
-      flex-shrink: 0;
-    }
-
-    @keyframes marqueeScroll {
-      0% { transform: translateX(0); }
-      100% { transform: translateX(-50%); }
-    }
-
-    /* Pulse glow on title */
-    .title {
-      animation: titlePop 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) both,
-                 glowPulse 3s ease-in-out 1.5s infinite;
-    }
-
-    @keyframes glowPulse {
-      0%, 100% { text-shadow: 0 4px 20px rgba(0,0,0,0.3); }
-      50% { text-shadow: 0 4px 40px rgba(168, 240, 230, 0.4), 0 4px 20px rgba(0,0,0,0.3); }
-    }
-
-    /* Responsive */
-    @media (max-width: 600px) {
-      .badge {
-        top: 12px;
-        right: 12px;
-        font-size: 12px;
-        padding: 8px 14px;
-      }
-      .btn {
-        padding: 12px 24px;
-        font-size: 16px;
-      }
-      .info-card {
-        padding: 20px 20px;
-      }
-      .sponsors {
-        gap: 16px;
-      }
-      .sponsor {
-        font-size: 12px;
-      }
-    }
-
-    /* Sparkle animation for background */
-    .sparkle {
+    .tape {
       position: absolute;
-      width: 4px;
-      height: 4px;
-      background: #fff;
-      border-radius: 50%;
-      animation: sparkle 2s ease-in-out infinite;
-      pointer-events: none;
-    }
-
-    @keyframes sparkle {
-      0%, 100% { opacity: 0; transform: scale(0); }
-      50% { opacity: 1; transform: scale(1); }
-    }
-
-    /* Confetti explosion */
-    .confetti-container {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-      z-index: 100;
-      overflow: hidden;
-    }
-
-    .confetti {
-      position: absolute;
-      width: 10px;
-      height: 10px;
-      opacity: 1;
-    }
-
-    .confetti.square { border-radius: 2px; }
-    .confetti.circle { border-radius: 50%; }
-    .confetti.strip { width: 6px; height: 16px; border-radius: 2px; }
-    .confetti.heart::before {
-      content: '';
-      display: block;
-      width: 100%;
-      height: 100%;
-      background: inherit;
-      border-radius: 50% 50% 0 0;
-      transform: rotate(-45deg);
-    }
-
-    @keyframes confettiFall {
-      0% {
-        transform: translateY(0) rotate(0deg) scale(1);
-        opacity: 1;
-      }
-      80% {
-        opacity: 1;
-      }
-      100% {
-        transform: translateY(100vh) rotate(720deg) scale(0.3);
-        opacity: 0;
-      }
-    }
-
-    /* Count pulse */
-    .count-bump {
-      animation: countBump 0.3s ease-out;
-    }
-
-    @keyframes countBump {
-      0% { transform: scale(1); }
-      50% { transform: scale(1.15); color: #a8f0e6; }
-      100% { transform: scale(1); }
-    }
-
-    /* Popup message after confetti */
-    .popup-message {
-      position: fixed;
-      top: 50%;
+      z-index: 4;
+      top: 15px;
       left: 50%;
-      transform: translate(-50%, -50%) scale(0);
-      z-index: 200;
-      background: linear-gradient(135deg, rgba(20, 10, 50, 0.95) 0%, rgba(60, 30, 90, 0.95) 100%);
-      backdrop-filter: blur(20px);
-      border: 2px solid rgba(168, 240, 230, 0.4);
-      border-radius: 24px;
-      padding: 40px 48px;
-      text-align: center;
-      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5), 0 0 40px rgba(168, 240, 230, 0.15);
-      animation: popupAppear 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-      max-width: 420px;
-      width: 90%;
+      transform: translateX(-50%) rotate(-1deg);
+      padding: 7px 18px;
+      border-radius: 3px;
+      background: rgba(255,246,190,.82);
+      color: #786838;
+      font-size: .7rem;
+      font-weight: 950;
+      letter-spacing: .12em;
+      white-space: nowrap;
+      box-shadow: 0 4px 12px rgba(50,70,65,.12);
     }
+    .map-stage { position: relative; aspect-ratio: 16 / 9.4; min-height: 430px; }
+    #travelMap { display: block; width: 100%; height: 100%; }
 
-    .popup-message .popup-emoji {
-      font-size: 48px;
-      margin-bottom: 16px;
-      display: block;
-      animation: popupBounce 1s ease-in-out infinite;
+    .sea-wave { animation: drift 16s ease-in-out infinite alternate; }
+    .sea-wave.second { animation-delay: -6s; animation-duration: 20s; }
+    .spark { transform-box: fill-box; transform-origin: center; animation: twinkle 3.6s ease-in-out infinite alternate; }
+    .spark.s2 { animation-delay: -.8s; }
+    .spark.s3 { animation-delay: -1.3s; }
+    @keyframes drift { to { transform: translateX(7px); } }
+    @keyframes twinkle { 60% { opacity: .42; transform: scale(.86); } }
+
+    .country-shadow { fill: rgba(41,91,87,.18); transform: translate(8px, 10px); }
+    .spain { fill: var(--land); stroke: #d99e55; stroke-width: 5; stroke-linejoin: round; }
+    .portugal { fill: #f2cda8; stroke: rgba(117,92,64,.32); stroke-width: 3; stroke-dasharray: 6 6; }
+    .island { fill: var(--land); stroke: #d99e55; stroke-width: 4; }
+    .terrain { fill: none; stroke: rgba(170,123,66,.32); stroke-width: 4; stroke-linecap: round; }
+    .geo-river { fill: none; stroke: rgba(54,126,155,.48); stroke-width: 3; stroke-linecap: round; stroke-dasharray: 7 6; }
+    .geo-border { fill: none; stroke: rgba(133,97,58,.2); stroke-width: 2; stroke-dasharray: 5 7; }
+    .geo-city-dot { fill: #fffdf6; stroke: rgba(40,61,59,.7); stroke-width: 2; }
+    .geo-name { fill: rgba(40,61,59,.68); font-size: 10px; font-weight: 900; paint-order: stroke; stroke: rgba(255,248,232,.8); stroke-width: 3; }
+    .geo-water-name { fill: rgba(54,126,155,.7); font-size: 9px; font-weight: 900; letter-spacing: .08em; }
+    .route-under { fill: none; stroke: rgba(255,255,255,.78); stroke-width: 12; stroke-linecap: round; }
+    .route-path { fill: none; stroke: rgba(55,104,102,.40); stroke-width: 5; stroke-linecap: round; stroke-dasharray: 2 15; transition: stroke .35s, stroke-width .35s, opacity .35s; }
+    .route-path.completed { stroke: rgba(244,111,95,.64); }
+    .route-path.active { stroke: var(--coral); stroke-width: 7; animation: route-breathe 2.8s ease-in-out infinite alternate; }
+    .map-card.paused .route-path.active { animation-play-state: paused; }
+    @keyframes route-breathe { to { opacity: .62; stroke-width: 6; } }
+
+    .city-dot { fill: var(--paper); stroke: var(--ink); stroke-width: 5; }
+    .city.active .city-dot { fill: var(--coral); stroke: white; animation: city-pulse 1.8s ease-in-out infinite alternate; }
+    .city text { fill: var(--ink); font-weight: 950; font-size: 24px; paint-order: stroke; stroke: rgba(255,253,246,.92); stroke-width: 7; stroke-linejoin: round; }
+    .city .date { fill: var(--blue); font-size: 17px; font-weight: 900; }
+    @keyframes city-pulse { to { r: 11; } }
+
+    .festival-scene { opacity: 0; pointer-events: none; transition: opacity .45s ease; }
+    .festival-scene.active { opacity: 1; }
+    .festival-label { fill: #283d3b; font-size: 16px; font-weight: 950; paint-order: stroke; stroke: rgba(255,253,246,.94); stroke-width: 6; stroke-linejoin: round; }
+    .festival-sub { fill: #c84f43; font-size: 12px; font-weight: 900; paint-order: stroke; stroke: rgba(255,253,246,.94); stroke-width: 5; }
+    #festivalBarcelona.active .human-tower { transform-box: fill-box; transform-origin: center bottom; animation: tower-rise 1.2s cubic-bezier(.2,.9,.3,1) both; }
+    #festivalBarcelona.active .fire-spark { transform-box: fill-box; transform-origin: center bottom; animation: fire-pop 1.5s ease-in-out infinite alternate; }
+    #festivalBarcelona.active .fire-spark.f2 { animation-delay: -.23s; }
+    #festivalBarcelona.active .fire-spark.f3 { animation-delay: -.39s; }
+    #festivalBarcelona.active .street-parade { animation: street-march 3.4s ease-in-out infinite alternate; }
+    #festivalMadrid.active .parade-float { animation: parade-roll 3.6s ease-in-out infinite alternate; }
+    .festival-scene.active .march-leg,
+    .festival-scene.active .march-arm { transform-box: fill-box; transform-origin: center top; animation: march-limb .48s ease-in-out infinite alternate; }
+    .festival-scene.active .march-leg.alt,
+    .festival-scene.active .march-arm.alt { animation-direction: alternate-reverse; }
+    .festival-scene.active .drum-stick { transform-box: fill-box; transform-origin: center bottom; animation: drum-beat .48s ease-in-out infinite alternate; }
+    #festivalMadrid.active .parade-wheel { transform-box: fill-box; transform-origin: center; animation: wheel-turn .8s linear infinite; }
+    #festivalMadrid.active .confetti { animation: confetti-fall 3s linear infinite; }
+    #festivalMadrid.active .confetti.c2 { animation-delay: -.38s; }
+    #festivalMadrid.active .confetti.c3 { animation-delay: -.72s; }
+    @keyframes tower-rise { from { opacity: 0; transform: translateY(20px) scaleY(.3); } }
+    @keyframes fire-pop { to { transform: translateY(-4px) scale(.88); opacity: .55; } }
+    @keyframes street-march { from { transform: translateX(-13px); } to { transform: translateX(13px); } }
+    @keyframes parade-roll { from { transform: translateX(-10px); } to { transform: translateX(10px); } }
+    @keyframes march-limb { from { transform: rotate(-18deg); } to { transform: rotate(18deg); } }
+    @keyframes drum-beat { to { transform: rotate(-22deg); } }
+    @keyframes wheel-turn { to { transform: rotate(360deg); } }
+    @keyframes confetti-fall { from { transform: translateY(-8px); } to { transform: translateY(30px); opacity: .25; } }
+
+    .home-scene { opacity: .42; transition: opacity .35s, filter .35s; }
+    .home-scene .home-glow { opacity: .18; transition: opacity .35s; }
+    .home-scene .window { fill: #bfd7d3; transition: fill .35s; }
+    .home-scene.active { opacity: 1; filter: drop-shadow(0 5px 7px rgba(122,76,32,.25)); }
+    .home-scene.active .home-glow { opacity: .78; animation: home-heart 2.2s ease-in-out infinite alternate; }
+    .home-scene.active .window { fill: #ffd96c; }
+    @keyframes home-heart { to { transform: translateY(-2px) scale(1.08); } }
+
+    .holiday-scene .palm-top { transform-box: fill-box; transform-origin: center bottom; }
+    .holiday-scene.active .palm-top { animation: palm-sway 3.5s ease-in-out infinite alternate; }
+    .holiday-scene.active .holiday-sun { animation: sun-glow 2.8s ease-in-out infinite alternate; }
+    .holiday-scene.active .tiny-wave { animation: tiny-wave 3.2s ease-in-out infinite alternate; }
+    .holiday-scene.active .swim-duo { animation: swim-drift 3.8s ease-in-out infinite alternate; }
+    .holiday-scene.active .swim-head { transform-box: fill-box; transform-origin: center bottom; animation: swim-bob 1.15s ease-in-out infinite alternate; }
+    .holiday-scene.active .swim-head.yunha { animation-delay: -.48s; }
+    .holiday-scene.active .swim-arm { transform-box: fill-box; transform-origin: center; animation: swim-stroke .72s ease-in-out infinite alternate; }
+    .holiday-scene.active .swim-arm.alt { animation-direction: alternate-reverse; }
+    .holiday-scene.active .swim-splash { stroke-dasharray: 5 8; animation: splash-flow 1.4s linear infinite; }
+    @keyframes palm-sway { to { transform: rotate(3deg); } }
+    @keyframes sun-glow { to { opacity: .65; transform: scale(1.06); } }
+    @keyframes tiny-wave { to { transform: translateX(4px); opacity: .55; } }
+    @keyframes swim-drift { to { transform: translateX(7px); } }
+    @keyframes swim-bob { to { transform: translateY(-3px) rotate(2deg); } }
+    @keyframes swim-stroke { from { transform: rotate(-20deg); } to { transform: rotate(22deg); } }
+    @keyframes splash-flow { to { stroke-dashoffset: -26; } }
+
+    #travelerWrapper { transition: opacity .28s ease; }
+    #travelerWrapper.swimming { opacity: 0; filter: none; }
+    .duo-bob { transform-box: fill-box; transform-origin: center bottom; }
+    #travelerWrapper.walking .duo-bob { animation: walk-lift .62s ease-in-out infinite alternate; }
+    #travelerWrapper.celebrating .duo-bob { animation: happy-hop .72s ease-in-out infinite alternate; }
+    .walking-leg { transform-box: fill-box; transform-origin: center top; }
+    #travelerWrapper.walking .walking-leg { animation: gentle-step .62s ease-in-out infinite alternate; }
+    #travelerWrapper.walking .walking-leg.alt { animation-direction: alternate-reverse; }
+    .map-card.paused .walking-leg { animation-play-state: paused; }
+    .walking-arm { transform-box: fill-box; transform-origin: center top; }
+    #travelerWrapper.walking .walking-arm { animation: gentle-arm .62s ease-in-out infinite alternate; }
+    #travelerWrapper.walking .walking-arm.alt { animation-direction: alternate-reverse; }
+    .map-card.paused .walking-arm { animation-play-state: paused; }
+    .map-card.paused .festival-scene.active *,
+    .map-card.paused #travelerWrapper * { animation-play-state: paused !important; }
+    #travelerWrapper.walking .travel-bag { animation: bag-roll .62s ease-in-out infinite alternate; }
+    .step-puffs { opacity: 0; transition: opacity .2s; }
+    #travelerWrapper.walking .step-puffs { opacity: 1; }
+    #travelerWrapper.walking .step-puff { transform-box: fill-box; transform-origin: center; animation: step-puff 1.24s ease-out infinite; }
+    #travelerWrapper.walking .step-puff.p2 { animation-delay: -.62s; }
+    .name-tag { fill: #fffdf6; stroke: rgba(40,61,59,.28); stroke-width: 1.5; }
+    .name-tag.minju { fill: #fff0ed; stroke: #f46f5f; }
+    .name-tag.yunha { fill: #fff7d8; stroke: #e3a72d; }
+    .name-text { fill: #283d3b; font-size: 10px; font-weight: 950; text-anchor: middle; }
+    @keyframes gentle-step { from { transform: rotate(-18deg); } to { transform: rotate(18deg); } }
+    @keyframes gentle-arm { from { transform: rotate(-13deg); } to { transform: rotate(13deg); } }
+    @keyframes walk-lift { to { transform: translateY(-1.8px); } }
+    @keyframes happy-hop { to { transform: translateY(-3px); } }
+    @keyframes bag-roll { to { transform: translateY(-1px) rotate(1.5deg); } }
+    @keyframes step-puff { from { opacity: .65; transform: translate(0,0) scale(.7); } to { opacity: 0; transform: translate(-8px,-4px) scale(1.35); } }
+
+    .status-bar {
+      position: absolute;
+      z-index: 3;
+      left: 18px;
+      right: 18px;
+      bottom: 17px;
+      display: grid;
+      grid-template-columns: auto minmax(0,1fr) auto;
+      gap: 12px;
+      align-items: center;
+      padding: 10px 12px;
+      border: 1px solid rgba(255,255,255,.82);
+      border-radius: 18px;
+      background: rgba(255,253,246,.88);
+      box-shadow: 0 10px 28px rgba(32,77,74,.16);
+      backdrop-filter: blur(10px);
     }
+    .status-emoji { width: 38px; height: 38px; display: grid; place-items: center; border-radius: 50%; background: var(--sun); font-size: 20px; }
+    .status-copy { min-width: 0; }
+    .status-copy strong { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: .92rem; }
+    .status-copy span { display: block; margin-top: 2px; color: var(--muted); font-size: .72rem; }
+    .mini-progress { width: min(170px, 20vw); height: 8px; overflow: hidden; border-radius: 99px; background: rgba(40,61,59,.13); }
+    .mini-progress span { display: block; width: 0; height: 100%; border-radius: inherit; background: linear-gradient(90deg,var(--coral),var(--sun)); }
 
-    .popup-message .popup-text {
-      font-size: 22px;
-      font-weight: 900;
-      color: #ffd93d;
-      line-height: 1.5;
-      text-shadow: 0 2px 10px rgba(255, 217, 61, 0.3);
-    }
-
-    .popup-message .popup-sub {
-      font-size: 14px;
-      color: rgba(255,255,255,0.6);
-      margin-top: 12px;
-    }
-
-    .popup-message .popup-close {
+    .controls {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
       margin-top: 20px;
-      padding: 10px 28px;
-      border: none;
-      border-radius: 50px;
-      background: linear-gradient(135deg, #56d4c8, #48c9b0);
-      color: #fff;
-      font-size: 14px;
-      font-weight: 700;
+    }
+    .control-button {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      min-height: 44px;
+      padding: 10px 17px;
+      border: 0;
+      border-radius: 999px;
+      background: var(--ink);
+      color: white;
+      font-weight: 900;
       cursor: pointer;
-      transition: transform 0.2s;
+      box-shadow: 3px 4px 0 rgba(244,111,95,.28);
+      transition: transform .18s, box-shadow .18s;
     }
+    .control-button.secondary { border: 1px solid rgba(40,61,59,.18); background: rgba(255,253,246,.76); color: var(--ink); box-shadow: none; }
+    .control-button:hover { transform: translateY(-2px) rotate(-1deg); }
+    .control-button:focus-visible, .route-stop:focus-visible { outline: 3px solid var(--sun); outline-offset: 3px; }
 
-    .popup-message .popup-close:hover {
-      transform: scale(1.05);
+    .route-rail {
+      position: relative;
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      align-items: start;
+      width: min(920px, 100%);
+      margin: 25px auto 0;
     }
+    .route-rail::before { content: ""; position: absolute; top: 17px; left: 10%; right: 10%; border-top: 2px dashed rgba(40,61,59,.24); }
+    .route-stop { position: relative; z-index: 1; padding: 0 5px; border: 0; background: transparent; color: var(--muted); cursor: pointer; }
+    .route-stop i { width: 35px; height: 35px; display: grid; place-items: center; margin: 0 auto 7px; border: 3px solid var(--paper); border-radius: 50%; background: #c9d6cb; box-shadow: 0 3px 9px rgba(40,61,59,.13); font-style: normal; transition: transform .25s, background .25s; }
+    .route-stop strong { display: block; color: var(--ink); font-size: .78rem; }
+    .route-stop small { display: block; margin-top: 2px; font-size: .66rem; }
+    .route-stop.active i { transform: scale(1.18) rotate(-6deg); background: var(--coral); }
+    .route-stop.active strong { color: var(--coral-dark); }
+    .note { margin: 22px 0 0; text-align: center; color: rgba(40,61,59,.58); font-size: .72rem; font-weight: 800; }
 
-    @keyframes popupAppear {
-      0% { transform: translate(-50%, -50%) scale(0); opacity: 0; }
-      100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+    .festival-cards { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 12px; width: min(920px,100%); margin: 22px auto 0; }
+    .festival-card { position: relative; overflow: hidden; display: grid; grid-template-columns: auto 1fr; gap: 12px; padding: 15px; border: 1px solid rgba(40,61,59,.14); border-radius: 20px 20px 20px 7px; background: rgba(255,253,246,.72); box-shadow: 0 8px 24px rgba(40,61,59,.07); }
+    .festival-card::after { content: ""; position: absolute; width: 70px; height: 70px; right: -25px; bottom: -30px; border-radius: 50%; background: rgba(244,111,95,.10); }
+    .festival-card.madrid::after { background: rgba(54,126,155,.11); }
+    .festival-card .festival-icon { width: 44px; height: 44px; display: grid; place-items: center; border-radius: 14px 14px 14px 4px; background: var(--coral); font-size: 23px; }
+    .festival-card.madrid .festival-icon { background: var(--blue); }
+    .festival-card h2 { margin: 1px 0 4px; font-size: .92rem; }
+    .festival-card p { margin: 0; color: var(--muted); font-size: .72rem; line-height: 1.5; }
+    .festival-card a { color: var(--coral-dark); font-weight: 900; text-decoration-thickness: 1px; text-underline-offset: 3px; }
+    .festival-card.madrid a { color: var(--blue); }
+
+    @media (max-width: 700px) {
+      .page { width: min(100% - 18px, 1160px); padding-top: 17px; }
+      .hero { padding-bottom: 18px; }
+      .map-card { border-radius: 24px 24px 24px 8px; }
+      .map-stage { height: 330px; min-height: 0; aspect-ratio: auto; }
+      #travelMap { width: 100%; max-width: none; transform: none; }
+      .tape { top: 10px; font-size: .62rem; }
+      .status-bar { left: 10px; right: 10px; bottom: 10px; grid-template-columns: auto 1fr; }
+      .mini-progress { grid-column: 1 / -1; width: 100%; }
+      .route-stop strong { font-size: .67rem; }
+      .route-stop small { font-size: .58rem; }
+      .route-stop i { width: 31px; height: 31px; font-size: .8rem; }
+      .route-rail::before { top: 15px; }
+      .festival-cards { grid-template-columns: 1fr; }
     }
-
-    @keyframes popupBounce {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-8px); }
+    @media (max-width: 430px) {
+      h1 { font-size: 2.3rem; }
+      h1 span { display: block; margin-top: 3px; }
+      .subtitle { font-size: .84rem; }
+      .status-copy strong { font-size: .78rem; }
+      .status-copy span { font-size: .64rem; }
+      .route-stop strong { font-size: .6rem; letter-spacing: -.04em; }
+      .route-stop small { display: none; }
     }
-
-    .popup-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.4);
-      z-index: 150;
-      opacity: 0;
-      animation: fadeIn 0.3s ease-out forwards;
-    }
-
-    @keyframes fadeIn {
-      to { opacity: 1; }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
     }
   </style>
 </head>
 <body>
+  <main class="page">
+    <header class="hero">
+      <p class="eyebrow">Two girls, one Spain trip</p>
+      <h1>우리 둘의 <span>스페인 대모험</span></h1>
+      <p class="subtitle">바르셀로나 → 마드리드 → 마요르카 → 마드리드 → 바르셀로나<br>민주와 윤하가 천천히 걸어 만나는 10박의 여행</p>
+    </header>
 
-  <!-- Floating emojis -->
-  <div class="floating-emojis" id="floatingEmojis"></div>
+    <section class="map-card" id="mapCard" aria-label="민주와 윤하의 스페인 여행 애니메이션">
+      <span class="tape">26 SEP — 06 OCT · 10 NIGHTS</span>
+      <div class="map-stage">
+        <svg id="travelMap" viewBox="0 0 1000 660" role="img" aria-labelledby="mapTitle mapDesc" preserveAspectRatio="xMidYMid meet">
+          <title id="mapTitle">두 여자 친구의 스페인 여행 경로</title>
+          <desc id="mapDesc">민주와 윤하가 바르셀로나에서 윤하네 마드리드 집과 마요르카를 거쳐 다시 바르셀로나로 돌아오는 느린 걷기 애니메이션 지도</desc>
+          <defs>
+            <pattern id="wavePattern" width="84" height="42" patternUnits="userSpaceOnUse">
+              <path d="M0 22 Q21 5 42 22 T84 22" fill="none" stroke="rgba(255,255,255,.34)" stroke-width="3" stroke-linecap="round"/>
+            </pattern>
+            <linearGradient id="seaGradient" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#c8ece5"/><stop offset="1" stop-color="#8fd0d1"/>
+            </linearGradient>
+          </defs>
 
-  <!-- Badge -->
-  <div class="badge">솔로 라이프 시청 파티</div>
+          <rect width="1000" height="660" fill="url(#seaGradient)"/>
+          <rect class="sea-wave" x="-30" y="0" width="1060" height="660" fill="url(#wavePattern)" opacity=".6"/>
+          <path class="sea-wave second" d="M28 535c60-24 104 20 164-4s108 19 165-4 110 15 170-7 113 21 176-3 115 17 195-4" fill="none" stroke="rgba(255,255,255,.42)" stroke-width="5" stroke-linecap="round"/>
 
-  <!-- Main content -->
-  <div class="main-content">
-    <h1 class="title">나는<br>솔로</h1>
-    <p class="subtitle">수요일 밤 10시 30분, 본방사수!</p>
+          <g opacity=".8" aria-hidden="true">
+            <text class="spark" x="90" y="105" font-size="34" fill="#fff7ce">✦</text>
+            <text class="spark s2" x="870" y="138" font-size="26" fill="#fff7ce">✦</text>
+            <text class="spark s3" x="870" y="545" font-size="38" fill="#fff7ce">✦</text>
+            <path d="M74 475c23-16 42-16 62 0" fill="none" stroke="rgba(255,255,255,.72)" stroke-width="5" stroke-linecap="round"/>
+            <path d="M91 463c8-7 16-7 24 0" fill="none" stroke="rgba(255,255,255,.72)" stroke-width="5" stroke-linecap="round"/>
+          </g>
 
-    <div class="buttons">
-      <button class="btn btn-watch" onclick="launchConfetti(this)">
-        <span>💚</span> 함께보기
-      </button>
-    </div>
+          <path class="country-shadow" d="M108 151 135 126 165 134 193 118 232 116 270 102 313 108 351 92 392 101 431 94 469 107 511 104 548 119 586 128 616 150 642 177 666 207 660 238 676 264 665 293 678 321 660 348 650 378 626 397 608 425 578 442 550 466 510 475 482 496 439 502 402 491 366 505 330 493 296 500 263 482 232 469 202 451 174 452 158 431 138 420 128 396 110 380 104 348 91 325 103 299 98 273 111 248 99 226 112 208 106 181Z"/>
+          <path class="spain" d="M108 151 135 126 165 134 193 118 232 116 270 102 313 108 351 92 392 101 431 94 469 107 511 104 548 119 586 128 616 150 642 177 666 207 660 238 676 264 665 293 678 321 660 348 650 378 626 397 608 425 578 442 550 466 510 475 482 496 439 502 402 491 366 505 330 493 296 500 263 482 232 469 202 451 174 452 158 431 138 420 128 396 110 380 104 348 91 325 103 299 98 273 111 248 99 226 112 208 106 181Z"/>
+          <path class="portugal" d="M108 151 135 140 158 146 170 166 165 194 176 219 166 247 170 278 160 310 164 340 153 370 166 401 174 430 158 431 138 420 128 396 110 380 104 348 91 325 103 299 98 273 111 248 99 226 112 208 106 181Z"/>
+          <text x="121" y="290" transform="rotate(-82 121 290)" fill="rgba(91,71,57,.55)" font-size="16" font-weight="900">PORTUGAL</text>
+          <text x="330" y="390" fill="rgba(139,91,49,.15)" font-family="Arial Rounded MT Bold" font-size="68" font-weight="900" letter-spacing="7">ESPAÑA</text>
 
-    <div class="notification-count">
-      <span>본방 알림 신청 2,728명</span>
-    </div>
+          <g aria-label="스페인의 산맥과 강">
+            <path class="terrain" d="M220 135q14-18 28 0t28 0 28 0 28 0M500 128q15-20 30 0t30 0 30 0 30 0M310 267q18-17 36 0t36 0 36 0 36 0M273 375q18-14 36 0t36 0 36 0M430 450q16-19 32 0t32 0 32 0"/>
+            <text class="geo-name" x="255" y="152">칸타브리아 산맥</text>
+            <text class="geo-name" x="544" y="149">피레네 산맥</text>
+            <text class="geo-name" x="356" y="284">시에라 데 과다라마</text>
+            <text class="geo-name" x="455" y="470">시에라 네바다</text>
 
-    <div class="info-card">
-      <h3>💘 나는솔로 진심인 사람들을 위한 모임 💘</h3>
-      <ul>
-        <li><span class="li-emoji">🔥</span>수요일 밤의 뜨거운 열기를 함께</li>
-        <li><span class="li-emoji">🔍</span>최신 기수 분석 및 토론</li>
-        <li><span class="li-emoji">💬</span>실시간 코멘트 공유</li>
-        <li><span class="li-emoji">🍽️</span>정성스러운 식사 제공</li>
-      </ul>
-      <div class="coupang-btn">
-        <span class="play-icon">▶</span> 쿠팡플레이 실시간 시청
+            <path class="geo-river" d="M555 166C565 191 603 198 622 218s25 21 39 24"/>
+            <path class="geo-river" d="M466 292C438 303 418 314 390 319s-70 7-104 5-70 5-112 12"/>
+            <path class="geo-river" d="M430 208C384 215 342 220 300 224s-82 4-126 0"/>
+            <path class="geo-river" d="M493 407C450 408 421 416 389 424s-70 3-105 16"/>
+            <text class="geo-water-name" x="601" y="202">EBRO</text>
+            <text class="geo-water-name" x="291" y="316">TAJO</text>
+            <text class="geo-water-name" x="337" y="216">DUERO</text>
+            <text class="geo-water-name" x="337" y="438">GUADALQUIVIR</text>
+
+            <path class="geo-border" d="M245 163C277 195 275 244 267 279M510 156C493 203 478 244 465 289M285 344C337 349 402 351 467 343M520 330C544 363 552 409 550 452"/>
+          </g>
+
+          <g aria-label="주요 도시 위치">
+            <circle class="geo-city-dot" cx="177" cy="158" r="3"/><text class="geo-name" x="184" y="161">Santiago</text>
+            <circle class="geo-city-dot" cx="350" cy="146" r="3"/><text class="geo-name" x="357" y="149">Bilbao</text>
+            <circle class="geo-city-dot" cx="525" cy="216" r="3"/><text class="geo-name" x="532" y="219">Zaragoza</text>
+            <circle class="geo-city-dot" cx="625" cy="316" r="3"/><text class="geo-name" x="632" y="319">Valencia</text>
+            <circle class="geo-city-dot" cx="301" cy="432" r="3"/><text class="geo-name" x="308" y="435">Sevilla</text>
+            <circle class="geo-city-dot" cx="480" cy="438" r="3"/><text class="geo-name" x="487" y="441">Granada</text>
+          </g>
+
+          <g fill="#fff8de" stroke="#d99e55" stroke-width="4" aria-label="발레아레스 제도">
+            <path d="M768 349q20-19 49-22l32 6 18 18-12 23-31 11-34-5-25-17Z"/>
+            <path d="M857 307q20-8 44-3l12 8-18 9-31-2Z"/>
+            <path d="M740 398l17-6 12 14-9 17-18-4-7-11Z"/>
+          </g>
+          <text class="geo-water-name" x="728" y="438">BALEARIC SEA</text>
+
+          <g aria-hidden="true">
+            <path class="route-under" d="M625 240 390 300"/>
+            <path class="route-under" d="M390 300 800 365"/>
+            <path class="route-under" d="M800 365 390 300"/>
+            <path class="route-under" d="M390 300 625 240"/>
+            <path class="route-path" id="route0" d="M625 240 390 300"/>
+            <path class="route-path" id="route1" d="M390 300 800 365"/>
+            <path class="route-path" id="route2" d="M800 365 390 300"/>
+            <path class="route-path" id="route3" d="M390 300 625 240"/>
+          </g>
+
+          <g class="city" id="cityMadrid" transform="translate(390 300)">
+            <circle class="city-dot" r="9"/><text x="-106" y="-20">마드리드</text><text class="date" x="-106" y="4">9/28–30 · 10/4–6</text>
+          </g>
+          <g class="city active" id="cityBarcelona" transform="translate(625 240)">
+            <circle class="city-dot" r="9"/><text x="22" y="42">바르셀로나</text><text class="date" x="22" y="67">9/26–28 · 10/6</text>
+          </g>
+          <g class="city" id="cityMallorca" transform="translate(800 365)">
+            <circle class="city-dot" r="9"/><text x="25" y="-18">마요르카</text><text class="date" x="25" y="7">9/30–10/4</text>
+          </g>
+
+          <!-- 윤하가 실제로 사는 마드리드 집 -->
+          <g id="madridHome" class="home-scene" transform="translate(430 100) scale(.82)" aria-label="윤하가 사는 마드리드 집">
+            <circle class="home-glow" cx="0" cy="13" r="57" fill="#ffd96c"/>
+            <path d="M-39 4 0-30 39 4v55h-78Z" fill="#fff8e8" stroke="#283d3b" stroke-width="4" stroke-linejoin="round"/>
+            <path d="m-47 7 47-44L47 7" fill="none" stroke="#c84f43" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+            <rect class="window" x="-27" y="13" width="20" height="21" rx="3" stroke="#283d3b" stroke-width="3"/>
+            <rect class="window" x="8" y="13" width="20" height="21" rx="3" stroke="#283d3b" stroke-width="3"/>
+            <path d="M-17 13v21m35-21v21M-27 24h20M8 24h20" stroke="#fffdf6" stroke-width="2"/>
+            <rect x="-9" y="33" width="18" height="26" rx="5" fill="#f46f5f" stroke="#283d3b" stroke-width="3"/>
+            <circle cx="4" cy="47" r="1.8" fill="#fff8e8"/>
+            <path d="M-48 59h96" stroke="#6d9c78" stroke-width="7" stroke-linecap="round"/>
+            <text class="home-glow" x="34" y="-27" fill="#f46f5f" font-size="28">♥</text>
+            <text x="0" y="82" text-anchor="middle" class="festival-label" style="font-size:13px">YUNHA'S MADRID HOME</text>
+            <text x="0" y="98" text-anchor="middle" class="festival-sub">윤하네 집 · Madrid</text>
+          </g>
+
+          <!-- 바르셀로나 라 메르세: 인간탑, 코레포크, 실제로 걷는 거리 행진 -->
+          <g id="festivalBarcelona" class="festival-scene" transform="translate(750 72)" aria-label="바르셀로나 라 메르세 축제 거리 행진">
+            <path d="M-83-19h174q13 0 13 13v119q0 13-13 13H-83q-13 0-13-13V-6q0-13 13-13Z" fill="rgba(255,253,246,.91)" stroke="rgba(40,61,59,.18)" stroke-width="2"/>
+            <text x="4" y="3" text-anchor="middle" class="festival-label">LA MERCÈ · 9/23–27</text>
+            <g class="human-tower" transform="translate(-39 19) scale(.82)" stroke="#283d3b" stroke-width="3" stroke-linecap="round">
+              <g fill="#f5c5a8" stroke="none"><circle cx="-17" cy="44" r="5"/><circle cx="0" cy="44" r="5"/><circle cx="17" cy="44" r="5"/><circle cx="-9" cy="25" r="5"/><circle cx="9" cy="25" r="5"/><circle cx="0" cy="7" r="5"/></g>
+              <path d="M-17 50v13m-7-7h14M0 50v13m-7-7H7M17 50v13m-7-7h14M-9 31v11m-6-5h12M9 31v11M3 37h12M0 13v10m-6-5H6"/>
+              <path d="M-25 65h50" stroke="#c84f43" stroke-width="5"/>
+            </g>
+            <g transform="translate(30 21)">
+              <path class="fire-spark" d="M0 37c-9-13 7-19 4-34 13 10 18 21 10 34Z" fill="#f46f5f"/>
+              <path class="fire-spark f2" d="M18 45c-6-10 5-15 3-26 10 8 13 17 7 26Z" fill="#f5ba45"/>
+              <path class="fire-spark f3" d="M-13 48c-6-9 5-14 3-24 9 7 12 16 6 24Z" fill="#ffd96c"/>
+            </g>
+            <g transform="translate(-57 73)" aria-hidden="true">
+              <path d="M-16 28H126" stroke="#dfb06d" stroke-width="4" stroke-linecap="round" stroke-dasharray="5 8"/>
+              <g class="street-parade">
+                <g transform="translate(0 -1)" stroke="#283d3b" stroke-width="2.4" stroke-linecap="round">
+                  <circle cx="10" cy="5" r="7" fill="#f6c8a8"/>
+                  <path d="M10 12v16" stroke="#f46f5f" stroke-width="9"/>
+                  <path class="march-arm" d="M7 15-2 22"/><path class="march-arm alt" d="M13 15 22 21"/>
+                  <path class="march-leg" d="M7 27 3 36"/><path class="march-leg alt" d="M13 27 18 36"/>
+                  <path d="M1 36h6m8 0h6" stroke="#367e9b" stroke-width="3"/>
+                  <path d="M3-1q7-8 14 0" fill="#ffd96c" stroke="#c84f43"/>
+                </g>
+                <g transform="translate(43 1)" stroke="#283d3b" stroke-width="2.4" stroke-linecap="round">
+                  <circle cx="10" cy="4" r="7" fill="#efb38f"/>
+                  <path d="M10 11v16" stroke="#367e9b" stroke-width="9"/>
+                  <circle cx="10" cy="20" r="9" fill="#ffd96c" stroke="#c84f43"/>
+                  <path class="drum-stick" d="M1 8 8 17"/><path class="drum-stick" d="M20 8 13 17"/>
+                  <path class="march-leg alt" d="M7 27 3 36"/><path class="march-leg" d="M13 27 18 36"/>
+                  <path d="M1 36h6m8 0h6" stroke="#f46f5f" stroke-width="3"/>
+                </g>
+                <g transform="translate(87 -1)" stroke="#283d3b" stroke-width="2.4" stroke-linecap="round">
+                  <circle cx="10" cy="5" r="7" fill="#d99a79"/>
+                  <path d="M10 12v16" stroke="#6d9c78" stroke-width="9"/>
+                  <path class="march-arm alt" d="M7 15-2 21"/><path class="march-arm" d="M13 15 22 22"/>
+                  <path class="march-leg" d="M7 27 3 36"/><path class="march-leg alt" d="M13 27 18 36"/>
+                  <path d="M1 36h6m8 0h6" stroke="#f5ba45" stroke-width="3"/>
+                  <path d="M5-2h10l4 5H1Z" fill="#f46f5f"/>
+                </g>
+              </g>
+            </g>
+            <text x="4" y="115" text-anchor="middle" class="festival-sub">인간탑 · 코레포크 · 거리 행진</text>
+          </g>
+
+          <!-- 마드리드 히스파니다드: 행진자와 함께 실제로 움직이는 퍼레이드 -->
+          <g id="festivalMadrid" class="festival-scene" transform="translate(238 365)" aria-label="마드리드 히스파니다드 이동 퍼레이드">
+            <path d="M-98-18h202q13 0 13 13v112q0 13-13 13H-98q-13 0-13-13V-5q0-13 13-13Z" fill="rgba(255,253,246,.92)" stroke="rgba(40,61,59,.18)" stroke-width="2"/>
+            <text x="3" y="3" text-anchor="middle" class="festival-label">HISPANIDAD · 10/4</text>
+            <g aria-hidden="true">
+              <rect class="confetti" x="-78" y="11" width="7" height="12" rx="2" fill="#f46f5f" transform="rotate(-20 -78 11)"/>
+              <rect class="confetti c2" x="82" y="8" width="7" height="12" rx="2" fill="#367e9b" transform="rotate(24 82 8)"/>
+              <rect class="confetti c3" x="64" y="25" width="7" height="12" rx="2" fill="#f5ba45" transform="rotate(-18 64 25)"/>
+              <path d="M-83 83H91" stroke="#dfb06d" stroke-width="4" stroke-linecap="round" stroke-dasharray="6 8"/>
+            </g>
+            <g transform="translate(-58 20) scale(.88)">
+              <g class="parade-float">
+                <path d="M8 36h105l12 21H0Z" fill="#f46f5f" stroke="#283d3b" stroke-width="3" stroke-linejoin="round"/>
+                <path d="M12 36h97l-13-13H28Z" fill="#f5ba45"/>
+                <circle class="parade-wheel" cx="25" cy="59" r="8" fill="#283d3b" stroke="#fff8e8" stroke-width="2"/>
+                <circle class="parade-wheel" cx="101" cy="59" r="8" fill="#283d3b" stroke="#fff8e8" stroke-width="2"/>
+                <path d="M25 54v10m-5-5h10m71-5v10m-5-5h10" stroke="#fff8e8" stroke-width="1.7"/>
+                <g stroke="#283d3b" stroke-width="3" stroke-linecap="round">
+                  <circle cx="39" cy="15" r="7" fill="#f1bc98"/><path d="M39 22v15"/><path class="march-arm" d="M39 27 29 34"/><path class="march-arm alt" d="M39 27 49 34"/>
+                  <circle cx="63" cy="11" r="7" fill="#f5c5a8"/><path d="M63 18v18"/><path class="march-arm alt" d="M63 25 53 17"/><path class="march-arm" d="M63 25 74 15"/>
+                  <circle cx="86" cy="15" r="7" fill="#d99a79"/><path d="M86 22v15"/><path class="march-arm" d="M86 27 76 34"/><path class="march-arm alt" d="M86 27 96 34"/>
+                </g>
+                <path d="M63 3V-8" stroke="#283d3b" stroke-width="3"/><path d="M64-8h17l-5 6 5 6H64Z" fill="#367e9b"/>
+              </g>
+            </g>
+            <g transform="translate(-91 46)" stroke="#283d3b" stroke-width="2.3" stroke-linecap="round" aria-hidden="true">
+              <circle cx="8" cy="3" r="6" fill="#f6c8a8"/><path d="M8 9v17" stroke="#367e9b" stroke-width="8"/>
+              <path class="march-arm" d="M6 13-2 20"/><path class="march-arm alt" d="M11 13 18 18"/>
+              <path class="march-leg" d="M5 25 1 34"/><path class="march-leg alt" d="M11 25 16 34"/>
+              <path d="M-1 34h6m8 0h6" stroke="#f46f5f" stroke-width="3"/>
+            </g>
+            <g transform="translate(82 46)" stroke="#283d3b" stroke-width="2.3" stroke-linecap="round" aria-hidden="true">
+              <circle cx="8" cy="3" r="6" fill="#d99a79"/><path d="M8 9v17" stroke="#6d9c78" stroke-width="8"/>
+              <path class="march-arm alt" d="M6 13-2 18"/><path class="march-arm" d="M11 13 18 20"/>
+              <path class="march-leg alt" d="M5 25 1 34"/><path class="march-leg" d="M11 25 16 34"/>
+              <path d="M-1 34h6m8 0h6" stroke="#f5ba45" stroke-width="3"/>
+            </g>
+            <text x="3" y="105" text-anchor="middle" class="festival-sub">스페인 광장 → 그란비아 → 시벨레스</text>
+          </g>
+
+          <!-- 마요르카: 도착하면 민주와 윤하가 실제로 바다에서 헤엄치는 휴양 장면 -->
+          <g id="mallorcaHoliday" class="festival-scene holiday-scene" transform="translate(800 432)" aria-label="민주와 윤하가 수영하는 마요르카 해변 휴양 장면">
+            <rect x="-103" y="-72" width="206" height="202" rx="24" fill="#fffdf6" stroke="rgba(40,61,59,.17)" stroke-width="2"/>
+            <circle class="holiday-sun" cx="70" cy="-45" r="18" fill="#ffd96c"/>
+            <path d="M60-45h20M70-55v20m-17-2-9-6m43 6 9-6" stroke="#f5ba45" stroke-width="3" stroke-linecap="round"/>
+            <ellipse cx="0" cy="28" rx="91" ry="29" fill="#f6d98b" stroke="rgba(217,158,85,.48)" stroke-width="3"/>
+            <ellipse cx="1" cy="54" rx="94" ry="34" fill="#73cddd" stroke="#fffdf6" stroke-width="3"/>
+            <g transform="translate(-66 -19)">
+              <path d="M8 64Q7 22 18-16" fill="none" stroke="#9a6b43" stroke-width="7" stroke-linecap="round"/>
+              <g class="palm-top" transform="translate(18 -16)" fill="#6d9c78">
+                <path d="M0 0Q-30-15-39 1-19-4 0 7Z"/><path d="M0 0Q-18-30-30-20-12-10 4 7Z"/>
+                <path d="M0 0Q20-31 31-17 13-10-3 8Z"/><path d="M0 0Q31-13 38 3 18-4-2 8Z"/>
+              </g>
+            </g>
+            <g transform="translate(34 -7) scale(.72)">
+              <path d="M0 0h58Q29-35 0 0Z" fill="#f46f5f" stroke="#283d3b" stroke-width="3"/>
+              <path d="M29 0v45" stroke="#283d3b" stroke-width="4"/>
+              <path d="M4 0h50" stroke="#fff8e8" stroke-width="3"/>
+              <path d="M5 29h47l16 16H17Z" fill="#4a91ad" stroke="#283d3b" stroke-width="3" stroke-linejoin="round"/>
+            </g>
+            <g transform="translate(0 34)" aria-hidden="true">
+              <g class="swim-duo">
+                <path class="swim-splash" d="M-81 24q11-8 22 0t22 0m68 0q11-8 22 0t22 0" fill="none" stroke="#fffdf6" stroke-width="4" stroke-linecap="round"/>
+                <g transform="translate(-28 0)">
+                  <g class="swim-head">
+                <circle cy="2" r="14" fill="#ffd2b8" stroke="#283d3b" stroke-width="2.4"/>
+                <path d="M-14 2q1-17 14-17T14 2Q5-1 0-9-5-1-14 2Z" fill="#5b3d33"/>
+                <path d="M-5 3q2 2 4 0m3 0q2 2 4 0" fill="none" stroke="#283d3b" stroke-width="1.8" stroke-linecap="round"/>
+                <path d="M-5-13q5-8 11 0" fill="none" stroke="#f46f5f" stroke-width="4" stroke-linecap="round"/>
+                <path class="swim-arm" d="M-9 15-23 24" fill="none" stroke="#ffd2b8" stroke-width="6" stroke-linecap="round"/>
+                <path class="swim-arm alt" d="M9 15 23 24" fill="none" stroke="#ffd2b8" stroke-width="6" stroke-linecap="round"/>
+                <path d="M-13 15q13-8 26 0" fill="none" stroke="#f46f5f" stroke-width="7"/>
+                <text x="0" y="-21" text-anchor="middle" class="festival-sub" style="font-size:9px">민주</text>
+                  </g>
+                </g>
+                <g transform="translate(28 2)">
+                  <g class="swim-head yunha">
+                <circle cy="2" r="14" fill="#f6c8a8" stroke="#283d3b" stroke-width="2.4"/>
+                <path d="M-14 5q0-20 14-20T14 5v8H9V2Q4-1 0-9-4-1-9 2v11h-5Z" fill="#342f33"/>
+                <path d="M-5 3q2 2 4 0m3 0q2 2 4 0" fill="none" stroke="#283d3b" stroke-width="1.8" stroke-linecap="round"/>
+                <path d="M-10-10q10-6 20 0" fill="none" stroke="#f5ba45" stroke-width="4" stroke-linecap="round"/>
+                <path class="swim-arm alt" d="M-9 15-23 24" fill="none" stroke="#f6c8a8" stroke-width="6" stroke-linecap="round"/>
+                <path class="swim-arm" d="M9 15 23 24" fill="none" stroke="#f6c8a8" stroke-width="6" stroke-linecap="round"/>
+                <path d="M-13 15q13-8 26 0" fill="none" stroke="#f5ba45" stroke-width="7"/>
+                <text x="0" y="-21" text-anchor="middle" class="festival-sub" style="font-size:9px">윤하</text>
+                  </g>
+                </g>
+                <path class="tiny-wave" d="M-87 38q13-9 26 0t26 0 26 0 26 0 26 0 26 0" fill="none" stroke="#fffdf6" stroke-width="5" stroke-linecap="round"/>
+              </g>
+            </g>
+            <text x="0" y="105" text-anchor="middle" class="festival-label">MALLORCA SWIM DAY</text>
+            <text x="0" y="121" text-anchor="middle" class="festival-sub">바다 수영 · 야자수 · 느긋한 4박</text>
+          </g>
+
+          <g id="travelerWrapper" transform="translate(625 240)" aria-label="함께 천천히 걷는 민주와 윤하">
+            <g transform="translate(-61 -104)">
+              <g class="duo-bob">
+              <ellipse cx="61" cy="108" rx="58" ry="10" fill="rgba(43,75,70,.18)"/>
+              <g class="step-puffs" aria-hidden="true">
+                <circle class="step-puff" cx="24" cy="106" r="5" fill="rgba(255,253,246,.84)"/>
+                <circle class="step-puff p2" cx="82" cy="106" r="5" fill="rgba(255,253,246,.84)"/>
+              </g>
+
+              <!-- 민주: 빨간 리본, 단발머리, 카메라 -->
+              <g transform="translate(4 4)" aria-label="민주">
+                <rect class="name-tag minju" x="4" y="-5" width="42" height="17" rx="8.5"/><text class="name-text" x="25" y="7">민주</text>
+                <ellipse cx="25" cy="41" rx="23" ry="25" fill="#5b3d33"/>
+                <circle cx="25" cy="39" r="18" fill="#ffd2b8"/>
+                <path d="M7 38q2-22 19-22 18 0 20 22-9-3-15-13-9 10-24 13Z" fill="#5b3d33"/>
+                <path d="M13 18q8-12 17 0" fill="none" stroke="#f46f5f" stroke-width="7" stroke-linecap="round"/>
+                <path d="m12 18-9-6 2 13Zm19 0 9-7-1 14Z" fill="#f46f5f"/>
+                <path d="M17 39q3 3 6 0m7 0q3 3 6 0" fill="none" stroke="#283d3b" stroke-width="2.3" stroke-linecap="round"/>
+                <circle cx="14" cy="47" r="3.5" fill="#f7a7a1" opacity=".65"/><circle cx="37" cy="47" r="3.5" fill="#f7a7a1" opacity=".65"/>
+                <path d="M20 49q5 6 10 0" fill="none" stroke="#c45b61" stroke-width="2.3" stroke-linecap="round"/>
+                <path d="M10 63q15-12 30 0l5 28H5Z" fill="#73b3c7" stroke="#283d3b" stroke-width="2.5" stroke-linejoin="round"/>
+                <path class="walking-arm alt" d="M11 65Q3 71 1 80" fill="none" stroke="#ffd2b8" stroke-width="6" stroke-linecap="round"/>
+                <path class="walking-arm" d="M39 65q8 7 12 10" fill="none" stroke="#ffd2b8" stroke-width="6" stroke-linecap="round"/>
+                <g class="walking-leg">
+                  <path d="M16 90v16" stroke="#283d3b" stroke-width="6" stroke-linecap="round"/>
+                  <path d="M12 106h9" stroke="#f46f5f" stroke-width="6" stroke-linecap="round"/>
+                </g>
+                <g class="walking-leg alt">
+                  <path d="M33 90v16" stroke="#283d3b" stroke-width="6" stroke-linecap="round"/>
+                  <path d="M29 106h9" stroke="#f46f5f" stroke-width="6" stroke-linecap="round"/>
+                </g>
+                <path d="M17 64q8 5 16 0" fill="none" stroke="#fff8e8" stroke-width="3"/>
+                <path d="M16 66v11m18-11v11" stroke="#283d3b" stroke-width="2"/>
+                <rect x="17" y="72" width="18" height="14" rx="4" fill="#283d3b"/><circle cx="26" cy="79" r="4" fill="#ffd96c"/>
+              </g>
+
+              <!-- 윤하: 노란 머리띠, 긴 머리, 작은 캐리어 -->
+              <g transform="translate(58 3)" aria-label="윤하">
+                <rect class="name-tag yunha" x="4" y="-4" width="42" height="17" rx="8.5"/><text class="name-text" x="25" y="8">윤하</text>
+                <path d="M1 43q0-29 24-29t24 29v26H1Z" fill="#342f33"/>
+                <circle cx="25" cy="39" r="18" fill="#f6c8a8"/>
+                <path d="M7 37q1-22 18-22 19 0 20 23-9-3-15-14-7 9-23 13Z" fill="#342f33"/>
+                <path d="M8 22q17-10 34 0" fill="none" stroke="#f5ba45" stroke-width="5" stroke-linecap="round"/>
+                <circle cx="43" cy="20" r="6" fill="#ffd96c"/><circle cx="48" cy="15" r="4" fill="#f46f5f"/>
+                <path d="M17 39q3 3 6 0m7 0q3 3 6 0" fill="none" stroke="#283d3b" stroke-width="2.3" stroke-linecap="round"/>
+                <circle cx="14" cy="47" r="3.5" fill="#f7a7a1" opacity=".65"/><circle cx="37" cy="47" r="3.5" fill="#f7a7a1" opacity=".65"/>
+                <path d="M20 49q5 6 10 0" fill="none" stroke="#c45b61" stroke-width="2.3" stroke-linecap="round"/>
+                <path d="M10 63q15-12 30 0l5 28H5Z" fill="#f7c85c" stroke="#283d3b" stroke-width="2.5" stroke-linejoin="round"/>
+                <path class="walking-arm alt" d="M10 66Q2 70-7 75" fill="none" stroke="#f6c8a8" stroke-width="6" stroke-linecap="round"/>
+                <path class="walking-arm" d="M39 66q9 7 12 15" fill="none" stroke="#f6c8a8" stroke-width="6" stroke-linecap="round"/>
+                <g class="walking-leg alt">
+                  <path d="M16 90v16" stroke="#283d3b" stroke-width="6" stroke-linecap="round"/>
+                  <path d="M12 106h9" stroke="#367e9b" stroke-width="6" stroke-linecap="round"/>
+                </g>
+                <g class="walking-leg">
+                  <path d="M33 90v16" stroke="#283d3b" stroke-width="6" stroke-linecap="round"/>
+                  <path d="M29 106h9" stroke="#367e9b" stroke-width="6" stroke-linecap="round"/>
+                </g>
+                <path d="M14 65h22" stroke="#fff8e8" stroke-width="3"/>
+                <g class="travel-bag">
+                  <rect x="47" y="79" width="17" height="24" rx="5" fill="#f46f5f" stroke="#fff8e8" stroke-width="2"/>
+                  <path d="M52 79v-7h7v7" fill="none" stroke="#283d3b" stroke-width="3"/>
+                  <circle cx="51" cy="105" r="2.5" fill="#283d3b"/><circle cx="60" cy="105" r="2.5" fill="#283d3b"/>
+                </g>
+              </g>
+              </g>
+            </g>
+          </g>
+
+          <g transform="translate(916 92)" aria-hidden="true">
+            <circle r="42" fill="rgba(255,253,246,.62)" stroke="rgba(40,61,59,.2)" stroke-width="2"/>
+            <text x="0" y="-8" text-anchor="middle" fill="#c84f43" font-size="15" font-weight="900">10박</text>
+            <text x="0" y="15" text-anchor="middle" fill="#283d3b" font-size="13" font-weight="900">둘이서 ♡</text>
+          </g>
+        </svg>
+
+        <div class="status-bar">
+          <span class="status-emoji" id="statusEmoji">🔥</span>
+          <span class="status-copy"><strong id="statusTitle">라 메르세 축제 속으로!</strong><span id="statusDetail" aria-live="polite">9/26–27 · 민주와 윤하의 여행이 시작돼요</span></span>
+          <span class="mini-progress" aria-hidden="true"><span id="progressFill"></span></span>
+        </div>
       </div>
+    </section>
+
+    <div class="controls" aria-label="애니메이션 컨트롤">
+      <button class="control-button" id="toggleAnimation" type="button">❚❚ 잠깐 멈춤</button>
+      <button class="control-button secondary" id="replayAnimation" type="button">↻ 처음부터</button>
     </div>
 
-    <div class="sponsors-wrapper">
-      <div class="sponsors-track">
-        <div class="sponsor">🌹 솔로 문화 협회</div>
-        <div class="sponsor-divider">✦</div>
-        <div class="sponsor">📶 곽두팔 와이파이</div>
-        <div class="sponsor-divider">✦</div>
-        <div class="sponsor">🏢 동천역 유타워</div>
-        <div class="sponsor-divider">✦</div>
-        <div class="sponsor">🌹 솔로 문화 협회</div>
-        <div class="sponsor-divider">✦</div>
-        <div class="sponsor">📶 곽두팔 와이파이</div>
-        <div class="sponsor-divider">✦</div>
-        <div class="sponsor">🏢 동천역 유타워</div>
-        <div class="sponsor-divider">✦</div>
-      </div>
-    </div>
-  </div>
+    <nav class="route-rail" aria-label="여행 일정 바로가기">
+      <button class="route-stop active" type="button" data-step="0"><i>🔥</i><strong>바르셀로나</strong><small>9/26–28 · 라 메르세</small></button>
+      <button class="route-stop" type="button" data-step="1"><i>🏠</i><strong>마드리드</strong><small>9/28–30 · 윤하네 집</small></button>
+      <button class="route-stop" type="button" data-step="2"><i>🏝️</i><strong>마요르카</strong><small>9/30–10/4 · 4박</small></button>
+      <button class="route-stop" type="button" data-step="3"><i>🎉</i><strong>마드리드</strong><small>10/4–6 · 집 + 퍼레이드</small></button>
+      <button class="route-stop" type="button" data-step="4"><i>💛</i><strong>바르셀로나</strong><small>10/6 · 도착</small></button>
+    </nav>
+    <section class="festival-cards" aria-label="여행 중 만나는 두 축제">
+      <article class="festival-card">
+        <span class="festival-icon" aria-hidden="true">🔥</span>
+        <div>
+          <h2>La Mercè · 바르셀로나</h2>
+          <p>9/26–27에 인간탑, 거인 행렬, 코레포크 불꽃과 거리 공연을 만나요. <a href="https://www.spain.info/es/agenda/fiestas-nuestra-senora-merced/" target="_blank" rel="noreferrer">스페인 관광청</a></p>
+        </div>
+      </article>
+      <article class="festival-card madrid">
+        <span class="festival-icon" aria-hidden="true">🎉</span>
+        <div>
+          <h2>Hispanidad · 마드리드</h2>
+          <p>집으로 돌아온 10/4, 약 2시간의 퍼레이드가 스페인 광장에서 시벨레스까지 이어져요(동선·시간 변경 가능). <a href="https://www.esmadrid.com/agenda/hispanidad-madrid" target="_blank" rel="noreferrer">마드리드 관광청</a> · <a href="https://contratos-publicos.comunidad.madrid/medias/90pptcabalgata0pdf/download" target="_blank" rel="noreferrer">퍼레이드 공식 문서</a></p>
+        </div>
+      </article>
+    </section>
+    <p class="note">도시를 누르면 민주와 윤하가 그 장면으로 바로 이동해요 · 전체 여정은 느리게 반복됩니다</p>
+  </main>
 
   <script>
-    // Emoji configuration
-    const emojiData = [
-      { emoji: '📺', x: 8, y: 8, delay: 0 },
-      { emoji: '💗', x: 12, y: 25, delay: 1.2 },
-      { emoji: '🌹', x: 5, y: 50, delay: 2.5 },
-      { emoji: '🌹', x: 85, y: 15, delay: 0.8 },
-      { emoji: '🌹', x: 15, y: 75, delay: 3.2 },
-      { emoji: '⭐', x: 88, y: 8, delay: 1.5 },
-      { emoji: '⭐', x: 75, y: 25, delay: 3 },
-      { emoji: '💗', x: 92, y: 40, delay: 0.5 },
-      { emoji: '⚡', x: 90, y: 55, delay: 2 },
-      { emoji: '⚡', x: 82, y: 70, delay: 3.5 },
-      { emoji: '🔥', x: 88, y: 50, delay: 1 },
-      { emoji: '💧', x: 78, y: 60, delay: 2.8 },
-      { emoji: '👑', x: 80, y: 30, delay: 1.8 },
-      { emoji: '💜', x: 20, y: 40, delay: 0.3 },
-      { emoji: '✨', x: 92, y: 80, delay: 2.2 },
-      { emoji: '🌹', x: 10, y: 65, delay: 1.6 },
-      { emoji: '💫', x: 50, y: 85, delay: 3.8 },
-      { emoji: '💗', x: 55, y: 90, delay: 0.7 },
-      { emoji: '⭐', x: 40, y: 88, delay: 2.6 },
+    const segments = [
+      { from: '바르셀로나', to: '마드리드', date: '9/28', mode: '👣' },
+      { from: '마드리드', to: '마요르카', date: '9/30', mode: '👣' },
+      { from: '마요르카', to: '마드리드', date: '10/4', mode: '👣' },
+      { from: '마드리드', to: '바르셀로나', date: '10/6', mode: '👣' }
     ];
+    const paths = segments.map((_, index) => document.querySelector(`#route${index}`));
+    const cities = [
+      document.querySelector('#cityBarcelona'),
+      document.querySelector('#cityMadrid'),
+      document.querySelector('#cityMallorca'),
+      document.querySelector('#cityMadrid'),
+      document.querySelector('#cityBarcelona')
+    ];
+    const traveler = document.querySelector('#travelerWrapper');
+    const statusEmoji = document.querySelector('#statusEmoji');
+    const statusTitle = document.querySelector('#statusTitle');
+    const statusDetail = document.querySelector('#statusDetail');
+    const progressFill = document.querySelector('#progressFill');
+    const toggleButton = document.querySelector('#toggleAnimation');
+    const replayButton = document.querySelector('#replayAnimation');
+    const mapCard = document.querySelector('#mapCard');
+    const routeStops = [...document.querySelectorAll('.route-stop')];
+    const barcelonaFestival = document.querySelector('#festivalBarcelona');
+    const madridFestival = document.querySelector('#festivalMadrid');
+    const madridHome = document.querySelector('#madridHome');
+    const mallorcaHoliday = document.querySelector('#mallorcaHoliday');
+    const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    const container = document.getElementById('floatingEmojis');
+    const phases = [
+      { type: 'stop', city: 0, duration: 5200, completed: 0, emoji: '🔥', title: '라 메르세 거리 행진 속으로!', detail: '9/26–27 · 인간탑, 코레포크와 행진단이 함께 움직여요', festival: 'barcelona' },
+      { type: 'move', segment: 0, duration: 9000, completed: 0 },
+      { type: 'stop', city: 1, duration: 3600, completed: 1, emoji: '🏠', title: '마드리드, 윤하네 집 도착!', detail: '9/28 · 윤하의 Madrid home에서 포근하게 쉬어요', home: true },
+      { type: 'move', segment: 1, duration: 9000, completed: 1 },
+      { type: 'stop', city: 2, duration: 6200, completed: 2, emoji: '🏊‍♀️', title: '마요르카 바다로 풍덩!', detail: '9/30–10/4 · 민주와 윤하가 파도 사이를 헤엄쳐요', holiday: true },
+      { type: 'move', segment: 2, duration: 9000, completed: 2 },
+      { type: 'stop', city: 3, duration: 4600, completed: 3, emoji: '🎉', title: '윤하네 집으로 돌아오니 Hispanidad!', detail: '10/4 · 그란비아를 물들이는 문화 퍼레이드', home: true, festival: 'madrid' },
+      { type: 'move', segment: 3, duration: 9000, completed: 3 },
+      { type: 'stop', city: 4, duration: 3600, completed: 4, emoji: '💛', title: '바르셀로나에 다시 도착!', detail: '10/6 · 민주와 윤하의 스페인 한 바퀴 완성' }
+    ];
+    const phaseStarts = [];
+    let totalDuration = 0;
+    phases.forEach(phase => {
+      phaseStarts.push(totalDuration);
+      totalDuration += phase.duration;
+    });
+    const stepTimes = [phaseStarts[0], phaseStarts[2], phaseStarts[4], phaseStarts[6], phaseStarts[8]];
+    let origin = performance.now();
+    let elapsed = 0;
+    let paused = reducedMotion;
+    let frame = null;
+    let reducedStep = 0;
 
-    emojiData.forEach((item, i) => {
-      const el = document.createElement('div');
-      el.className = 'emoji';
-      el.textContent = item.emoji;
-      el.style.left = item.x + '%';
-      el.style.top = item.y + '%';
-      el.style.animationDelay = item.delay + 's';
-      el.style.animationDuration = (6 + Math.random() * 4) + 's';
-      container.appendChild(el);
+    const ease = value => value;
+
+    function setActiveCity(index) {
+      [...new Set(cities)].forEach(city => city.classList.remove('active'));
+      cities[index].classList.add('active');
+      routeStops.forEach((stop, stopIndex) => stop.classList.toggle('active', stopIndex === index));
+    }
+
+    function placeTraveler(segmentIndex, segmentProgress) {
+      const path = paths[segmentIndex];
+      const point = path.getPointAtLength(path.getTotalLength() * ease(segmentProgress));
+      traveler.setAttribute('transform', `translate(${point.x} ${point.y})`);
+    }
+
+    function placeAtCity(cityIndex) {
+      if (cityIndex === 0) placeTraveler(0, 0);
+      else placeTraveler(cityIndex - 1, 1);
+    }
+
+    function getPhaseAt(time) {
+      let phaseIndex = phases.length - 1;
+      for (let index = 0; index < phases.length; index += 1) {
+        if (time < phaseStarts[index] + phases[index].duration) {
+          phaseIndex = index;
+          break;
+        }
+      }
+      return { phase: phases[phaseIndex], localTime: time - phaseStarts[phaseIndex] };
+    }
+
+    function render(time) {
+      const cycleTime = Math.min(time, totalDuration - 1);
+      progressFill.style.width = `${(cycleTime / totalDuration) * 100}%`;
+      paths.forEach(path => path.classList.remove('active', 'completed'));
+      const { phase, localTime } = getPhaseAt(cycleTime);
+      paths.forEach((path, index) => {
+        if (index < phase.completed) path.classList.add('completed');
+      });
+      barcelonaFestival.classList.toggle('active', phase.festival === 'barcelona');
+      madridFestival.classList.toggle('active', phase.festival === 'madrid');
+      madridHome.classList.toggle('active', phase.home === true);
+      mallorcaHoliday.classList.toggle('active', phase.holiday === true);
+      traveler.classList.toggle('walking', phase.type === 'move');
+      traveler.classList.toggle('swimming', phase.holiday === true);
+      traveler.classList.toggle('celebrating', phase.type === 'stop' && Boolean(phase.festival));
+
+      if (phase.type === 'move') {
+        const segmentProgress = Math.min(1, localTime / phase.duration);
+        const segment = segments[phase.segment];
+        placeTraveler(phase.segment, segmentProgress);
+        paths[phase.segment].classList.add('active');
+        setActiveCity(segmentProgress < .28 ? phase.segment : phase.segment + 1);
+        statusEmoji.textContent = segment.mode;
+        statusTitle.textContent = `${segment.from}에서 ${segment.to}로!`;
+        statusDetail.textContent = `${segment.date} · 민주와 윤하가 천천히 걸어가는 중이에요`;
+      } else {
+        placeAtCity(phase.city);
+        setActiveCity(phase.city);
+        statusEmoji.textContent = phase.emoji;
+        statusTitle.textContent = phase.title;
+        statusDetail.textContent = phase.detail;
+      }
+    }
+
+    function tick(now) {
+      if (paused) return;
+      elapsed = now - origin;
+      if (elapsed >= totalDuration) {
+        origin = now;
+        elapsed = 0;
+      }
+      render(elapsed);
+      frame = requestAnimationFrame(tick);
+    }
+
+    function updatePausedUI() {
+      mapCard.classList.toggle('paused', paused);
+      toggleButton.textContent = reducedMotion ? '→ 다음 도시' : paused ? '▶ 계속 여행' : '❚❚ 잠깐 멈춤';
+      toggleButton.setAttribute('aria-pressed', String(paused));
+    }
+
+    function toggleAnimation() {
+      if (reducedMotion) {
+        reducedStep = (reducedStep + 1) % 5;
+        render(stepTimes[reducedStep]);
+        return;
+      }
+      paused = !paused;
+      if (paused) {
+        if (frame) cancelAnimationFrame(frame);
+      } else {
+        origin = performance.now() - elapsed;
+        frame = requestAnimationFrame(tick);
+      }
+      updatePausedUI();
+    }
+
+    function replay() {
+      elapsed = 0;
+      origin = performance.now();
+      reducedStep = 0;
+      render(0);
+      if (!reducedMotion) {
+        paused = false;
+        if (frame) cancelAnimationFrame(frame);
+        frame = requestAnimationFrame(tick);
+      }
+      updatePausedUI();
+    }
+
+    toggleButton.addEventListener('click', toggleAnimation);
+    replayButton.addEventListener('click', replay);
+    routeStops.forEach((stop, index) => {
+      stop.addEventListener('click', () => {
+        elapsed = stepTimes[index];
+        render(elapsed);
+        if (!reducedMotion) {
+          paused = false;
+          if (frame) cancelAnimationFrame(frame);
+          origin = performance.now() - elapsed;
+          frame = requestAnimationFrame(tick);
+        }
+        updatePausedUI();
+      });
+    });
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden && !paused && !reducedMotion) toggleAnimation();
     });
 
-    // Add sparkles
-    for (let i = 0; i < 20; i++) {
-      const sparkle = document.createElement('div');
-      sparkle.className = 'sparkle';
-      sparkle.style.left = Math.random() * 100 + '%';
-      sparkle.style.top = Math.random() * 100 + '%';
-      sparkle.style.animationDelay = Math.random() * 3 + 's';
-      sparkle.style.animationDuration = (1.5 + Math.random() * 2) + 's';
-      container.appendChild(sparkle);
-    }
-
-    // Continuously increasing notification count
-    const countEl = document.querySelector('.notification-count span');
-    let currentCount = 2728;
-
-    // Initial count-up animation from 0 to 2728
-    const initialDuration = 2000;
-    const initialStart = performance.now();
-
-    function animateInitialCount(now) {
-      const elapsed = now - initialStart;
-      const progress = Math.min(elapsed / initialDuration, 1);
-      const eased = 1 - Math.pow(1 - progress, 3);
-      const displayCount = Math.floor(eased * currentCount);
-      countEl.textContent = `본방 알림 신청 ${displayCount.toLocaleString()}명`;
-      if (progress < 1) {
-        requestAnimationFrame(animateInitialCount);
-      } else {
-        // After initial animation, start continuous increment
-        startContinuousCount();
-      }
-    }
-
-    function startContinuousCount() {
-      setInterval(() => {
-        const increment = Math.floor(Math.random() * 5) + 1;
-        currentCount += increment;
-        countEl.textContent = `본방 알림 신청 ${currentCount.toLocaleString()}명`;
-        countEl.classList.remove('count-bump');
-        void countEl.offsetWidth; // force reflow
-        countEl.classList.add('count-bump');
-      }, 1500 + Math.random() * 2000);
-    }
-
-    setTimeout(() => requestAnimationFrame(animateInitialCount), 1500);
-
-    // Confetti explosion
-    function launchConfetti(btnEl) {
-      const rect = btnEl.getBoundingClientRect();
-      const originX = rect.left + rect.width / 2;
-      const originY = rect.top + rect.height / 2;
-
-      const container = document.createElement('div');
-      container.className = 'confetti-container';
-      document.body.appendChild(container);
-
-      const colors = ['#ff6b6b', '#ffd93d', '#6bcb77', '#4d96ff', '#ff6bb5', '#a855f7', '#56d4c8', '#ff9f43'];
-      const shapes = ['square', 'circle', 'strip'];
-      const total = 80;
-
-      for (let i = 0; i < total; i++) {
-        const confetti = document.createElement('div');
-        const shape = shapes[Math.floor(Math.random() * shapes.length)];
-        confetti.className = `confetti ${shape}`;
-        confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
-        confetti.style.left = originX + 'px';
-        confetti.style.top = originY + 'px';
-
-        const angle = (Math.random() * 360) * (Math.PI / 180);
-        const velocity = 200 + Math.random() * 400;
-        const dx = Math.cos(angle) * velocity;
-        const dy = Math.sin(angle) * velocity - 200;
-        const rotation = Math.random() * 1080 - 540;
-        const duration = 1.2 + Math.random() * 1.5;
-        const size = 6 + Math.random() * 10;
-
-        confetti.style.width = size + 'px';
-        confetti.style.height = (shape === 'strip' ? size * 2.5 : size) + 'px';
-
-        confetti.animate([
-          {
-            transform: 'translate(0, 0) rotate(0deg) scale(1)',
-            opacity: 1
-          },
-          {
-            transform: `translate(${dx}px, ${dy + 600}px) rotate(${rotation}deg) scale(0.2)`,
-            opacity: 0
-          }
-        ], {
-          duration: duration * 1000,
-          easing: 'cubic-bezier(0.25, 0.46, 0.45, 0.94)',
-          fill: 'forwards'
-        });
-
-        container.appendChild(confetti);
-      }
-
-      // Button pulse effect
-      btnEl.style.transform = 'scale(1.15)';
-      setTimeout(() => { btnEl.style.transform = ''; }, 200);
-
-      // Show popup message after confetti starts
-      setTimeout(() => {
-        const overlay = document.createElement('div');
-        overlay.className = 'popup-overlay';
-
-        const popup = document.createElement('div');
-        popup.className = 'popup-message';
-        popup.innerHTML = `
-          <span class="popup-emoji">🚌💨</span>
-          <div class="popup-text">7시 40분<br>주택전시관에서 출발 예정</div>
-          <div class="popup-sub">늦지 않게 모여주세요!</div>
-          <button class="popup-close" onclick="this.closest('.popup-message').remove(); document.querySelector('.popup-overlay').remove();">확인했어요!</button>
-        `;
-
-        overlay.addEventListener('click', () => {
-          popup.remove();
-          overlay.remove();
-        });
-
-        document.body.appendChild(overlay);
-        document.body.appendChild(popup);
-      }, 600);
-
-      // Cleanup confetti
-      setTimeout(() => container.remove(), 4000);
-    }
+    render(0);
+    updatePausedUI();
+    if (!reducedMotion) frame = requestAnimationFrame(tick);
   </script>
 </body>
 </html>
